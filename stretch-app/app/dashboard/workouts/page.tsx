@@ -1,7 +1,7 @@
-import Pagination from "@/app/ui/invoices/pagination";
+import Pagination from "@/app/ui/workouts/pagination";
 import Search from "@/app/ui/search";
-import Table from "@/app/ui/invoices/table";
-import { CreateWorkout } from "@/app/ui/invoices/buttons";
+import Table from "@/app/ui/workouts/table";
+import { CreateWorkout } from "@/app/ui/workouts/buttons";
 import { inter } from "@/app/ui/fonts";
 import { WorkoutsTableSkeleton } from "@/app/ui/skeletons";
 import { Suspense } from "react";

@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { UpdateInvoice, DeleteInvoice } from "@/app/ui/invoices/buttons";
-import InvoiceStatus from "@/app/ui/invoices/status";
+import { UpdateWorkout, DeleteWorkout } from "@/app/ui/workouts/buttons";
+import WorkoutStatus from "@/app/ui/workouts/status";
 import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
 import { fetchFilteredWorkouts } from "@/app/lib/data";
 
@@ -37,7 +37,7 @@ export default async function InvoicesTable({
                     </div>
                     <p className="text-sm text-gray-500">{workout.username}</p>
                   </div>
-                  {/* <InvoiceStatus status={workout.status} /> */}
+                  {/* <WorkoutStatus status={workout.status} /> */}
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
@@ -45,8 +45,8 @@ export default async function InvoicesTable({
                     <p>M/W/F</p>
                   </div>
                   <div className="flex justify-end gap-2">
-                    <UpdateInvoice id={workout.id} />
-                    <DeleteInvoice id={workout.id} />
+                    <UpdateWorkout id={workout.id} />
+                    <DeleteWorkout id={workout.id} />
                   </div>
                 </div>
               </div>
@@ -100,12 +100,12 @@ export default async function InvoicesTable({
                   <td className="whitespace-nowrap px-3 py-3">M/W/F</td>
                   <td className="whitespace-nowrap px-3 py-3">
                     20
-                    {/* <InvoiceStatus status={workout.status} /> */}
+                    {/* <WorkoutStatus status={workout.status} /> */}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateInvoice id={workout.id} />
-                      <DeleteInvoice id={workout.id} />
+                      <UpdateWorkout id={workout.id} />
+                      <DeleteWorkout id={workout.id} />
                     </div>
                   </td>
                 </tr>
