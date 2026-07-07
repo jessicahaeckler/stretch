@@ -2,23 +2,6 @@ import { inter } from "@/app/ui/fonts";
 import { ScheduleWorkout } from "@/app/lib/definitions";
 import { StarIcon } from "@heroicons/react/24/solid";
 
-// export default async function WorkoutWrapper() {
-//   return (
-//     <>
-//       {/* NOTE: Uncomment this code in Chapter 9 */}
-
-//       {/* <Card title="Collected" value={totalPaidWorkouts} type="collected" />
-//       <Card title="Pending" value={totalPendingWorkouts} type="pending" />
-//       <Card title="Total Workouts" value={numberOfWorkouts} type="workouts" />
-//       <Card
-//         title="Total Customers"
-//         value={numberOfCustomers}
-//         type="customers"
-//       /> */}
-//     </>
-//   );
-// }
-
 export default async function Card({
   Schedules,
 }: {
@@ -38,9 +21,9 @@ export default async function Card({
       {Weeks.map((week) => {
         return (
           <div key={week.day} className="rounded-xl bg-gray-50 p-2 shadow-sm">
-            <div className="flex p-4">
+            <div className="flex pb-4 justify-center">
               {/* {Icon ? <Icon className="h-5 w-5 text-gray-700" /> : null} */}
-              <h3 className="ml-2 text-sm font-medium">{week.desc}</h3>
+              <h3 className="text-sm font-medium">{week.desc}</h3>
             </div>
             {Schedules.map((schedule) => {
               const scheduled = schedule.date_completed.getUTCDay() == week.day;

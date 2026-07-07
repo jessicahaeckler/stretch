@@ -18,10 +18,9 @@ export default async function WorkoutPage() {
       <h2 className={`${inter.className} mb-4 text-xl md:text-2xl`}>
         Workouts
       </h2>
-      {/* NOTE: Uncomment this code in Chapter 7 */}
 
       <div className="rounded-xl bg-gray-50 p-4">
-        <div className="sm:grid-cols-2 mt-0 grid grid-cols-12 items-end gap-2 rounded-md bg-grey-500 p-4 md:gap-4">
+        <div className="mt-0 grid grid-cols-1 gap-2 rounded-md bg-grey-500 p-4 sm:grid-cols-2 md:gap-4">
           {workouts.map((workout) => (
             <div
               key={workout.id}

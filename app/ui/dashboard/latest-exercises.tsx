@@ -24,7 +24,7 @@ export default async function LatestExercises() {
                   },
                 )}
               >
-                <div className="flex items-center">
+                <div className="flex min-w-0 flex-1 items-center">
                   <Image
                     src={exercise.image_url}
                     alt={`${exercise.name}'s picture`}
