@@ -11,7 +11,6 @@ import { fetchLatestWorkouts } from "@/app/lib/data";
 
 export default async function WorkoutPage() {
   const workouts = await fetchLatestWorkouts();
-  const chartHeight = 350;
 
   return (
     <div className="w-full md:col-span-4">
@@ -19,8 +18,8 @@ export default async function WorkoutPage() {
         Workouts
       </h2>
 
-      <div className="rounded-xl bg-gray-50 p-4">
-        <div className="mt-0 grid grid-cols-1 gap-2 rounded-md bg-grey-500 p-4 sm:grid-cols-2 md:gap-4">
+      <div className="rounded-xl bg-gray-50 p-4 max-h-[500px] overflow-hidden">
+        <div className="mt-0 grid grid-cols-1 gap-2 rounded-md bg-grey-500 p-4 sm:grid-cols-2 md:gap-4 max-h-[400px] overflow-scroll">
           {workouts.map((workout) => (
             <div
               key={workout.id}

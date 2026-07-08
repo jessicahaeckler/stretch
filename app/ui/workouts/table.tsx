@@ -1,7 +1,5 @@
 import Image from "next/image";
 import { UpdateWorkout, DeleteWorkout } from "@/app/ui/workouts/buttons";
-import WorkoutStatus from "@/app/ui/workouts/status";
-import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
 import { fetchFilteredWorkouts } from "@/app/lib/data";
 
 export default async function InvoicesTable({

@@ -1,6 +1,4 @@
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import clsx from "clsx";
-import Image from "next/image";
 import { inter } from "@/app/ui/fonts";
 import { Workout } from "@/app/lib/definitions";
 export default async function LatestWorkouts({
