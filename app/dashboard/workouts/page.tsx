@@ -7,6 +7,10 @@ import { WorkoutsTableSkeleton } from "@/app/ui/skeletons";
 import { Suspense } from "react";
 import { fetchWorkoutsPages } from "@/app/lib/data";
 
+// this page will display workouts you have created or saved from other users.
+// editing another users workout creates a new copy.
+// deleting another users workout removes the workout from your "saved" workouts.
+
 export default async function Page(props: {
   searchParams?: Promise<{
     query?: string;
@@ -20,7 +24,7 @@ export default async function Page(props: {
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${inter.className} text-2xl`}>Workouts</h1>
+        <h1 className={`${inter.className} text-2xl`}>My Workouts</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search workouts..." />

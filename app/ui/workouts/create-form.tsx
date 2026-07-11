@@ -1,61 +1,66 @@
-import { Workout } from "@/app/lib/definitions";
+import { WorkoutExerciseLink } from "@/app/lib/definitions";
 import Link from "next/link";
-import {
-  CheckIcon,
-  ClockIcon,
-  CurrencyDollarIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/outline";
+import { LockClosedIcon, LockOpenIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/app/ui/button";
+import { createWorkout } from "@/app/lib/actions";
+import { Day } from "@/app/ui/workouts/exercises/day-picker";
+import { ExercisePicker } from "@/app/ui/workouts/exercises/exercise-list";
 
-export default function Form({ workouts }: { workouts: Workout[] }) {
+export default function Form({
+  exercises,
+}: {
+  exercises: WorkoutExerciseLink[];
+}) {
   return (
-    <form>
+    <form action={createWorkout}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Workout Name */}
         <div className="mb-4">
           <label htmlFor="workout" className="mb-2 block text-sm font-medium">
-            Choose workout
-          </label>
-          <div className="relative">
-            <select
-              id="workout"
-              name="workoutId"
-              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Select a workout
-              </option>
-              {workouts.map((workout) => (
-                <option key={workout.id} value={workout.id}>
-                  {workout.name}
-                </option>
-              ))}
-            </select>
-            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-          </div>
-        </div>
-
-        {/* Workout Exercises */}
-        <div className="mb-4">
-          <label htmlFor="exercise" className="mb-2 block text-sm font-medium">
-            Choose an exercise
+            Workout name
           </label>
           <div className="relative mt-2 rounded-md">
-            <div className="relative">
+            <div className="relative flex gap-2">
+              <div className="text-red-700 m-auto text-lg">*</div>
               <input
-                id="exercise"
-                name="exercise"
-                type="number"
-                step="0.01"
-                placeholder="Enter exercise"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                id="workout"
+                name="workout"
+                type="text"
+                required={true}
+                placeholder="Enter workout"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-2 text-sm placeholder:text-gray-500"
               />
-              <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
+
+        {/* Workout Exercise */}
+        <div className="mb-4">
+          <label htmlFor="exercise" className="mb-2 block text-sm font-medium">
+            Choose exercise
+          </label>
+          <div className="mb-4 rounded-md border border-gray-200 bg-white px-[14px] py-3 overflow-auto w-full">
+            <ExercisePicker exercises={exercises}></ExercisePicker>
+          </div>
+        </div>
+
+        {/* Workout Schedule */}
+        <fieldset className="min-w-0">
+          <legend className="mb-2 block text-sm font-medium">
+            Workout schedule
+          </legend>
+          <div className="mb-4 rounded-md border border-gray-200 bg-white px-[14px] py-3 overflow-auto w-full">
+            <div className="md:flex-row flex-col flex gap-4">
+              <Day day={"sunday"} />
+              <Day day={"monday"} />
+              <Day day={"tuesday"} />
+              <Day day={"wednesday"} />
+              <Day day={"thursday"} />
+              <Day day={"friday"} />
+              <Day day={"saturday"} />
+            </div>
+          </div>
+        </fieldset>
 
         {/* Workout Status */}
         <fieldset>
@@ -70,28 +75,29 @@ export default function Form({ workouts }: { workouts: Workout[] }) {
                   name="status"
                   type="radio"
                   value="private"
-                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                  defaultChecked={true}
+                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-1"
                 />
                 <label
                   htmlFor="private"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Private <ClockIcon className="h-4 w-4" />
+                  Private <LockClosedIcon className="h-4 w-4" />
                 </label>
               </div>
               <div className="flex items-center">
                 <input
-                  id="posted"
+                  id="public"
                   name="status"
                   type="radio"
-                  value="posted"
-                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                  value="public"
+                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-1"
                 />
                 <label
-                  htmlFor="posted"
+                  htmlFor="public"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
-                  Posted <CheckIcon className="h-4 w-4" />
+                  Public <LockOpenIcon className="h-4 w-4" />
                 </label>
               </div>
             </div>
@@ -100,7 +106,7 @@ export default function Form({ workouts }: { workouts: Workout[] }) {
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
-          href="/dashboard/invoices"
+          href="/dashboard/workouts"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel

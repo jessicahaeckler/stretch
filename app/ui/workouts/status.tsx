@@ -8,7 +8,7 @@ export default function WorkoutStatus({ status }: { status: string }) {
         "inline-flex items-center rounded-full px-2 py-1 text-xs",
         {
           "bg-gray-100 text-gray-500": status === "private",
-          "bg-green-500 text-white": status === "posted",
+          "bg-green-500 text-white": status === "public",
         },
       )}
     >
@@ -18,9 +18,9 @@ export default function WorkoutStatus({ status }: { status: string }) {
           <ClockIcon className="ml-1 w-4 text-gray-500" />
         </>
       ) : null}
-      {status === "posted" ? (
+      {status === "public" ? (
         <>
-          Posted
+          Public
           <CheckIcon className="ml-1 w-4 text-white" />
         </>
       ) : null}

@@ -5,10 +5,8 @@ import {
   Exercise,
   WorkoutExerciseLink,
   ScheduleWorkout,
-  FullWorkoutUser,
-  Workout
+  FullWorkoutUser
 } from './definitions';
-import { formatCurrency } from './utils';
 
 const sql = postgres(process.env.STORAGE_POSTGRES_URL!, { ssl: 'require' });
 
@@ -195,20 +193,20 @@ export async function fetchWorkoutsPages(query: string) {
 //   }
 // }
 
-export async function fetchWorkouts() {
+export async function fetchExercises() {
   try {
-    const workouts = await sql<Workout[]>`
+    const exercises = await sql<WorkoutExerciseLink[]>`
       SELECT
         id,
         name
-      FROM workouts
+      FROM exercises
       ORDER BY name ASC
     `;
 
-    return workouts;
+    return exercises;
   } catch (err) {
     console.error('Database Error:', err);
-    throw new Error('Failed to fetch all workouts.');
+    throw new Error('Failed to fetch all exercises.');
   }
 }
 

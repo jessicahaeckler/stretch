@@ -50,6 +50,7 @@ export type WorkoutExerciseLink = {
   id: string;
   workout_id: string;
   exercise_id: string;
+  name: string;
   time: string;
   reps: number;
   rest: string;
