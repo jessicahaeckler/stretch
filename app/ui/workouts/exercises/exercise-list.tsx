@@ -1,34 +1,38 @@
 "use client";
 import { useState } from "react";
-import { WorkoutExerciseLink } from "@/app/lib/definitions";
+import {
+  WorkoutExerciseLink,
+  WorkoutExerciseLinkForm,
+} from "@/app/lib/definitions";
 import { Button } from "@/app/ui/button";
 import { ClockIcon, HashtagIcon, MoonIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 
-type ExerciseEntry = {
-  exerciseId: string;
-  time: string;
-  reps: number;
-  rest: string;
-};
-
 export function ExercisePicker({
   exercises,
+  initialList,
 }: {
   exercises: WorkoutExerciseLink[];
+  initialList?: WorkoutExerciseLinkForm[];
 }) {
-  const [selected, setSelected] = useState<ExerciseEntry[]>([]);
-  const [current, setCurrent] = useState<Partial<ExerciseEntry>>({});
+  const [selected, setSelected] = useState<WorkoutExerciseLinkForm[]>(
+    initialList ?? [],
+  );
+  const [current, setCurrent] = useState<Partial<WorkoutExerciseLinkForm>>({});
   const [trackingKey, setTrackingKey] = useState(0);
+  const [deleted, setDeleted] = useState<String[]>([]);
 
   function handleAdd() {
-    if (!current.exerciseId) return; // guard against empty add
-    setSelected((prev) => [...prev, current as ExerciseEntry]);
+    if (!current.exerciseid) return; // guard against empty add
+    setSelected((prev) => [...prev, current as WorkoutExerciseLinkForm]);
     setCurrent({});
     setTrackingKey((k) => k + 1);
   }
 
   function handleRemove(index: number) {
+    if (selected[index]?.id) {
+      setDeleted((prev) => [...prev, selected[index]?.id as String]);
+    }
     setSelected((prev) => prev.filter((_, i) => i !== index));
   }
 
@@ -36,12 +40,17 @@ export function ExercisePicker({
     <div>
       {/* hidden input carries the real payload to the server action */}
       <input type="hidden" name="exercises" value={JSON.stringify(selected)} />
+      <input
+        type="hidden"
+        name="deletedExercises"
+        value={JSON.stringify(deleted)}
+      />
 
       <select
         className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-2 text-sm placeholder:text-gray-500 mb-4"
-        value={current.exerciseId ?? ""}
+        value={current.exerciseid ?? ""}
         onChange={(e) =>
-          setCurrent((c) => ({ ...c, exerciseId: e.target.value }))
+          setCurrent((c) => ({ ...c, exerciseid: e.target.value }))
         }
       >
         <option value="" disabled>
@@ -69,7 +78,7 @@ export function ExercisePicker({
         {selected.map((ex, i) => (
           <li className="py-2 flex items-center justify-between" key={i}>
             <div className="grow m-auto flex gap-2">
-              {exercises.find((e) => e.id === ex.exerciseId)?.name}
+              {exercises.find((e) => e.id === ex.exerciseid)?.name}
               <label
                 className={clsx(
                   "ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600",
@@ -117,7 +126,6 @@ export function ExercisePicker({
 }
 
 export type ExerciseFields = {
-  timing: "reps" | "timed";
   reps?: number;
   time?: string;
   rest?: string;
@@ -136,9 +144,8 @@ export function ExerciseTracking({ onChange }: ExerciseTrackingProps) {
 
   function emit(overrides: Partial<ExerciseFields> = {}) {
     onChange?.({
-      timing,
-      reps,
-      time,
+      reps: timing == "reps" ? reps : undefined,
+      time: timing == "timed" ? time : undefined,
       rest: showRest ? rest : undefined,
       ...overrides,
     });
@@ -157,7 +164,7 @@ export function ExerciseTracking({ onChange }: ExerciseTrackingProps) {
           onChange={(e) => {
             const value = e.target.value as "reps" | "timed";
             setTiming(value);
-            emit({ timing: value });
+            emit({ reps: value == "reps" ? reps : undefined });
           }}
         />
         <label
@@ -179,7 +186,7 @@ export function ExerciseTracking({ onChange }: ExerciseTrackingProps) {
           onChange={(e) => {
             const value = e.target.value as "reps" | "timed";
             setTiming(value);
-            emit({ timing: value });
+            emit({ time: value == "timed" ? time : undefined });
           }}
         />
         <label

@@ -18,59 +18,75 @@ const users = [
 const workouts = [
   {
     id: '410544b2-4001-4271-9855-fec4b6a6443b',
+    date_entered: new Date().toISOString().split('T')[0],
     user_id: users[0].id,
     name: 'Stretch Routine',
     duration: '30:00',
-    schedule_days: 'smtwtfs'
+    schedule_days: ['sunday', 'monday','tuesday','wednesday','thursday','friday','saturday'],
+    status: 'public',
   },
   {
     id: '410544b2-4001-4271-9855-fec4b6a6441b',
     user_id: users[0].id,
     name: 'Workout Routine',
     duration: '30:00',
-    schedule_days: 'smtwtfs'
+    schedule_days: ['sunday', 'monday','tuesday','wednesday','thursday','friday','saturday'],
+    status: 'public',
+    date_entered: new Date().toISOString().split('T')[0]
   },
   {
     id: '410544b2-4001-4271-9855-fec4b6a6442b',
     user_id: users[0].id,
     name: 'Leg Day',
     duration: '30:00',
-    schedule_days: 'smtwtfs'
+    schedule_days: ['sunday', 'monday','tuesday','wednesday','thursday','friday','saturday'],
+    status: 'public',
+    date_entered: new Date().toISOString().split('T')[0]
   },
   {
     id: '410544b2-4001-4271-9855-fec4b6a6444b',
     user_id: users[0].id,
     name: 'Arm Day',
     duration: '30:00',
-    schedule_days: 'smtwtfs'
+    schedule_days: ['sunday', 'monday','tuesday','wednesday','thursday','friday','saturday'],
+    status: 'public',
+    date_entered: new Date().toISOString().split('T')[0]
   },
   {
     id: '410544b2-4001-4271-9855-fec4b6a6445b',
     user_id: users[0].id,
     name: 'Core Day',
     duration: '30:00',
-    schedule_days: 'smtwtfs'
+    schedule_days: ['sunday', 'monday','tuesday','wednesday','thursday','friday','saturday'],
+    status: 'public',
+    date_entered: new Date().toISOString().split('T')[0]
   },
   {
     id: '410544b2-4001-4271-9855-fec4b6a6446b',
     user_id: users[0].id,
     name: 'Back Day',
     duration: '30:00',
-    schedule_days: 'smtwtfs'
+    schedule_days: ['sunday', 'monday','tuesday','wednesday','thursday','friday','saturday'],
+    status: 'public',
+    date_entered: new Date().toISOString().split('T')[0]
   },
   {
     id: '410544b2-4001-4271-9855-fec4b6a6141b',
     user_id: users[0].id,
     name: 'Full Body',
     duration: '30:00',
-    schedule_days: 'smtwtfs'
+    schedule_days: ['sunday', 'monday','tuesday','wednesday','thursday','friday','saturday'],
+    status: 'public',
+    date_entered: new Date().toISOString().split('T')[0]
   },
   {
     id: '410544b2-4001-4271-9855-fec4b6a6241b',
     user_id: users[0].id,
     name: 'Cardio Routine',
     duration: '30:00',
-    schedule_days: 'smtwtfs'
+    schedule_days: ['sunday', 'monday','tuesday','wednesday','thursday','friday','saturday'],
+    status: 'public',
+    date_entered: new Date().toISOString().split('T')[0]
   },
 ];
 

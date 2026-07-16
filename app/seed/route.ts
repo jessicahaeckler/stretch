@@ -1,8 +1,14 @@
-import bcrypt from 'bcrypt';
-import postgres from 'postgres';
-import { users, workouts, exercises, workout_exercise_links, schedules } from '../lib/placeholder-data';
+import bcrypt from "bcrypt";
+import postgres from "postgres";
+import {
+  users,
+  workouts,
+  exercises,
+  workout_exercise_links,
+  schedules,
+} from "../lib/placeholder-data";
 
-const sql = postgres(process.env.STORAGE_POSTGRES_URL!, { ssl: 'require' });
+const sql = postgres(process.env.STORAGE_POSTGRES_URL!, { ssl: "require" });
 
 async function seedUsers() {
   await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
@@ -37,18 +43,20 @@ async function seedWorkouts() {
   await sql`
     CREATE TABLE IF NOT EXISTS workouts (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      date_entered DATE NOT NULL,
       user_id UUID NOT NULL,
       name VARCHAR(255) NOT NULL,
       duration VARCHAR(255) NOT NULL,
-      schedule_days VARCHAR(255) NOT NULL
+      schedule_days VARCHAR(10)[],
+      status VARCHAR(255) NOT NULL
     );
   `;
 
   const insertedWorkouts = await Promise.all(
     workouts.map(
       (workout) => sql`
-        INSERT INTO workouts (id, user_id, name, duration, schedule_days)
-        VALUES (${workout.id}, ${workout.user_id}, ${workout.name}, ${workout.duration}, ${workout.schedule_days})
+        INSERT INTO workouts (id, date_entered, user_id, name, duration, schedule_days, status)
+        VALUES (${workout.id}, ${workout.date_entered}, ${workout.user_id}, ${workout.name}, ${workout.duration}, ${workout.schedule_days}, ${workout.status})
         ON CONFLICT (id) DO NOTHING;
       `,
     ),
@@ -89,8 +97,8 @@ async function seedWorkoutExerciseLinks() {
       workout_id UUID NOT NULL,
       exercise_id UUID NOT NULL,
       time VARCHAR(255),
-      reps INT NOT NULL,
-      rest VARCHAR(255) NOT NULL
+      reps INT,
+      rest VARCHAR(255)
     );
   `;
 
@@ -134,18 +142,23 @@ async function seedSchedules() {
   return insertedSchedules;
 }
 
-
 export async function GET() {
   try {
-    const result = await sql.begin((sql) => [
-      // seedUsers(),
-      seedWorkouts(),
-      // seedExercises(),
-      // seedWorkoutExerciseLinks(),
-      seedSchedules()
-    ]);
+    await sql`
+      ALTER TABLE workout_exercise_links ALTER COLUMN rest DROP NOT NULL;
+    `;
+    await sql`
+      ALTER TABLE workout_exercise_links ALTER COLUMN reps DROP NOT NULL;
+    `;
+    // const result = await sql.begin((sql) => [
+    //   // seedUsers(),
+    //   // seedWorkouts(),
+    //   // seedExercises(),
+    //   // seedWorkoutExerciseLinks(),
+    //   // seedSchedules()
+    // ]);
 
-    return Response.json({ message: 'Database seeded successfully' });
+    return Response.json({ message: "Database seeded successfully" });
   } catch (error) {
     return Response.json({ error }, { status: 500 });
   }

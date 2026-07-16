@@ -5,7 +5,9 @@ import {
   Exercise,
   WorkoutExerciseLink,
   ScheduleWorkout,
-  FullWorkoutUser
+  FullWorkoutUser,
+  WorkoutForm,
+  WorkoutExerciseLinkForm
 } from './definitions';
 
 const sql = postgres(process.env.STORAGE_POSTGRES_URL!, { ssl: 'require' });
@@ -168,30 +170,45 @@ export async function fetchWorkoutsPages(query: string) {
   }
 }
 
-// export async function fetchInvoiceById(id: string) {
-//   try {
-//     const data = await sql<InvoiceForm[]>`
-//       SELECT
-//         invoices.id,
-//         invoices.customer_id,
-//         invoices.amount,
-//         invoices.status
-//       FROM invoices
-//       WHERE invoices.id = ${id};
-//     `;
+export async function fetchWorkoutById(id: string) {
+  try {
+    const workout = await sql<WorkoutForm[]>`
+      SELECT
+        workouts.id,
+        workouts.user_id,
+        workouts.name,
+        workouts.schedule_days,
+        workouts.status
+      FROM workouts
+      WHERE workouts.id = ${id};
+    `;
 
-//     const invoice = data.map((invoice) => ({
-//       ...invoice,
-//       // Convert amount from cents to dollars
-//       amount: invoice.amount / 100,
-//     }));
+    return workout[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch workout.');
+  }
+}
 
-//     return invoice[0];
-//   } catch (error) {
-//     console.error('Database Error:', error);
-//     throw new Error('Failed to fetch invoice.');
-//   }
-// }
+export async function fetchExerciseLinksById(id: string) {
+  try {
+    const links = await sql<WorkoutExerciseLinkForm[]>`
+      SELECT
+        workout_exercise_links.id,
+        workout_exercise_links.time,
+        workout_exercise_links.reps,
+        workout_exercise_links.rest,
+        exercises.id as exerciseid
+      FROM workout_exercise_links JOIN exercises ON exercises.id = workout_exercise_links.exercise_id
+      WHERE workout_exercise_links.workout_id = ${id};
+    `;
+
+    return links;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch links.');
+  }
+}
 
 export async function fetchExercises() {
   try {

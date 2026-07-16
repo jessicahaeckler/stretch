@@ -1,10 +1,26 @@
 "use client";
 
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
-import { HashtagIcon, ClockIcon, MoonIcon } from "@heroicons/react/24/outline";
 
-export function Day({ day }: { day: string }) {
+const DAYS = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+] as const;
+
+type DayValue = (typeof DAYS)[number];
+
+function Day({
+  day,
+  defaultChecked,
+}: {
+  day: DayValue;
+  defaultChecked?: boolean;
+}) {
   return (
     <div className="flex items-center">
       <input
@@ -12,6 +28,7 @@ export function Day({ day }: { day: string }) {
         name="schedule"
         type="checkbox"
         value={day}
+        defaultChecked={defaultChecked}
         className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-1"
       />
       <label
@@ -20,6 +37,22 @@ export function Day({ day }: { day: string }) {
       >
         {day} <CalendarDaysIcon className="h-4 w-4" />
       </label>
+    </div>
+  );
+}
+
+export function ScheduleDays({ selectedDays }: { selectedDays?: DayValue[] }) {
+  return (
+    <div className="mb-4 w-full overflow-auto rounded-md border border-gray-200 bg-white px-[14px] py-3">
+      <div className="flex flex-col gap-4 md:flex-row">
+        {DAYS.map((day) => (
+          <Day
+            key={day}
+            day={day}
+            defaultChecked={selectedDays?.includes(day)}
+          />
+        ))}
+      </div>
     </div>
   );
 }

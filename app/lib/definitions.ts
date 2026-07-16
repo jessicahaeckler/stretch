@@ -46,6 +46,14 @@ export type Exercise = {
   image_url: string;
 };
 
+export type WorkoutExerciseLinkForm = {
+  id?: string;
+  exerciseid: string;
+  time: string;
+  reps: number;
+  rest: string;
+};
+
 export type WorkoutExerciseLink = {
   id: string;
   workout_id: string;
@@ -69,4 +77,17 @@ export type ScheduleWorkout = {
   name: string;
   status: 'COMPLETED' | 'SCHEDULED' | 'MISSED';
   date_completed: Date;
+};
+
+export type ExerciseField = {
+  id: string;
+  name: string;
+};
+
+export type WorkoutForm = {
+  id: string;
+  user_id: string;
+  name: string;
+  schedule_days: ("sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday")[],
+  status: 'private' | 'public';
 };
