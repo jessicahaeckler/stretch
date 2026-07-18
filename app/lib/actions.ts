@@ -9,7 +9,7 @@ const sql = postgres(process.env.STORAGE_POSTGRES_URL!, { ssl: "require" });
 
 const FormSchema = z.object({
   id: z.string(),
-  name: z.string(),
+  name: z.string().trim().min(1, "Please enter a workout name."),
   exercises: z.array(
     z.object({
       id: z.nullable(z.string().optional()),
@@ -20,14 +20,24 @@ const FormSchema = z.object({
     }),
   ),
   schedule: z.array(z.string()),
-  status: z.enum(["public", "private"]),
+  status: z.enum(["public", "private"], {
+    error: "Please select a workout status.",
+  }),
   date: z.string(),
   deletedExercises: z.array(z.string()).optional(),
 });
 
+export type State = {
+  errors?: {
+    name?: string[];
+    status?: string[];
+  };
+  message?: string | null;
+};
+
 const CreateWorkout = FormSchema.omit({ id: true, date: true });
 
-export async function createWorkout(formData: FormData) {
+export async function createWorkout(prevState: State, formData: FormData) {
   let parsedExercises: unknown;
   try {
     parsedExercises = JSON.parse(formData.get("exercises") as string);
@@ -35,12 +45,21 @@ export async function createWorkout(formData: FormData) {
     throw new Error("Invalid exercises payload");
   }
 
-  const { name, exercises, schedule, status } = CreateWorkout.parse({
+  const validatedFields = CreateWorkout.safeParse({
     name: formData.get("workout"),
     exercises: parsedExercises,
     schedule: formData.getAll("schedule"),
     status: formData.get("status"),
   });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Create Workout.",
+    };
+  }
+
+  const { name, exercises, schedule, status } = validatedFields.data;
   const date = new Date().toISOString().split("T")[0];
 
   // TODO: Change this to current user - hard coding the user id until users/login is set up
@@ -77,7 +96,11 @@ export async function createWorkout(formData: FormData) {
 
 const UpdateWorkout = FormSchema.omit({ id: true, date: true });
 
-export async function updateWorkout(id: string, formData: FormData) {
+export async function updateWorkout(
+  id: string,
+  prevState: State,
+  formData: FormData,
+) {
   let parsedExercises: unknown;
   try {
     parsedExercises = JSON.parse(formData.get("exercises") as string);
@@ -92,14 +115,23 @@ export async function updateWorkout(id: string, formData: FormData) {
     throw new Error("Invalid exercises payload");
   }
 
+  const validatedFields = UpdateWorkout.safeParse({
+    name: formData.get("name"),
+    exercises: parsedExercises,
+    schedule: formData.getAll("schedule"),
+    status: formData.get("status"),
+    deletedExercises: parsedDelete,
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Update Workout.",
+    };
+  }
+
   const { exercises, schedule, name, status, deletedExercises } =
-    UpdateWorkout.parse({
-      name: formData.get("name"),
-      exercises: parsedExercises,
-      schedule: formData.getAll("schedule"),
-      status: formData.get("status"),
-      deletedExercises: parsedDelete,
-    });
+    validatedFields.data;
 
   try {
     await sql.begin(async (sql) => {

@@ -1,18 +1,23 @@
+"use client";
+
 import { WorkoutExerciseLink } from "@/app/lib/definitions";
 import Link from "next/link";
 import { LockClosedIcon, LockOpenIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/app/ui/button";
-import { createWorkout } from "@/app/lib/actions";
+import { createWorkout, State } from "@/app/lib/actions";
 import { ScheduleDays } from "@/app/ui/workouts/exercises/day-picker";
 import { ExercisePicker } from "@/app/ui/workouts/exercises/exercise-list";
+import { useActionState } from "react";
 
 export default function Form({
   exercises,
 }: {
   exercises: WorkoutExerciseLink[];
 }) {
+  const initialState: State = { message: null, errors: {} };
+  const [state, formAction] = useActionState(createWorkout, initialState);
   return (
-    <form action={createWorkout}>
+    <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Workout Name */}
         <div className="mb-4">
@@ -26,12 +31,20 @@ export default function Form({
                 id="workout"
                 name="workout"
                 type="text"
-                required={true}
                 placeholder="Enter workout"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-2 text-sm placeholder:text-gray-500 bg-white"
+                aria-describedby="workout-error"
               />
             </div>
           </div>
+        </div>
+        <div id="workout-error" aria-live="polite" aria-atomic="true">
+          {state.errors?.name &&
+            state.errors.name.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
         </div>
 
         {/* Workout Exercise */}
@@ -67,6 +80,7 @@ export default function Form({
                   value="private"
                   defaultChecked={true}
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-1"
+                  aria-describedby="status-error"
                 />
                 <label
                   htmlFor="private"
@@ -82,6 +96,7 @@ export default function Form({
                   type="radio"
                   value="public"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-1"
+                  aria-describedby="status-error"
                 />
                 <label
                   htmlFor="public"
@@ -93,6 +108,18 @@ export default function Form({
             </div>
           </div>
         </fieldset>
+        <div id="status-error" aria-live="polite" aria-atomic="true">
+          {state.errors?.status &&
+            state.errors.status.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
+
+          <p className="mt-2 text-sm text-red-500" key={state.message}>
+            {state.message}
+          </p>
+        </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link

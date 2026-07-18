@@ -10,7 +10,8 @@ import Link from "next/link";
 import { Button } from "@/app/ui/button";
 import { ScheduleDays } from "@/app/ui/workouts/exercises/day-picker";
 import { ExercisePicker } from "@/app/ui/workouts/exercises/exercise-list";
-import { updateWorkout } from "@/app/lib/actions";
+import { updateWorkout, State } from "@/app/lib/actions";
+import { useActionState } from "react";
 
 export default function EditWorkoutForm({
   workout,
@@ -21,9 +22,11 @@ export default function EditWorkoutForm({
   exercises: WorkoutExerciseLink[];
   links: WorkoutExerciseLinkForm[];
 }) {
+  const initialState: State = { message: null, errors: {} };
   const UpdateWorkoutWithId = updateWorkout.bind(null, workout.id);
+  const [state, formAction] = useActionState(UpdateWorkoutWithId, initialState);
   return (
-    <form action={UpdateWorkoutWithId}>
+    <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Workout Name */}
         <div className="mb-4">
@@ -39,9 +42,18 @@ export default function EditWorkoutForm({
                 defaultValue={workout.name}
                 placeholder="Enter name"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-2 text-sm placeholder:text-gray-500 bg-white"
+                aria-describedby="name-error"
               />
             </div>
           </div>
+        </div>
+        <div id="name-error" aria-live="polite" aria-atomic="true">
+          {state.errors?.name &&
+            state.errors.name.map((error: string) => (
+              <p className="mt-2 text-sm text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
         </div>
 
         <fieldset className="min-w-0">
@@ -80,6 +92,7 @@ export default function EditWorkoutForm({
                   value="private"
                   defaultChecked={workout.status === "private"}
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                  aria-describedby="status-error"
                 />
                 <label
                   htmlFor="private"
@@ -96,6 +109,7 @@ export default function EditWorkoutForm({
                   value="public"
                   defaultChecked={workout.status === "public"}
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                  aria-describedby="status-error"
                 />
                 <label
                   htmlFor="public"
@@ -107,6 +121,18 @@ export default function EditWorkoutForm({
             </div>
           </div>
         </fieldset>
+      </div>
+      <div id="status-error" aria-live="polite" aria-atomic="true">
+        {state.errors?.status &&
+          state.errors.status.map((error: string) => (
+            <p className="mt-2 text-sm text-red-500" key={error}>
+              {error}
+            </p>
+          ))}
+
+        <p className="mt-2 text-sm text-red-500" key={state.message}>
+          {state.message}
+        </p>
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link

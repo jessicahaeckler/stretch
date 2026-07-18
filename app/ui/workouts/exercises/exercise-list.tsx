@@ -20,7 +20,7 @@ export function ExercisePicker({
   );
   const [current, setCurrent] = useState<Partial<WorkoutExerciseLinkForm>>({});
   const [trackingKey, setTrackingKey] = useState(0);
-  const [deleted, setDeleted] = useState<String[]>([]);
+  const [deleted, setDeleted] = useState<string[]>([]);
 
   function handleAdd() {
     if (!current.exerciseid) return; // guard against empty add
@@ -31,7 +31,7 @@ export function ExercisePicker({
 
   function handleRemove(index: number) {
     if (selected[index]?.id) {
-      setDeleted((prev) => [...prev, selected[index]?.id as String]);
+      setDeleted((prev) => [...prev, selected[index]?.id as string]);
     }
     setSelected((prev) => prev.filter((_, i) => i !== index));
   }

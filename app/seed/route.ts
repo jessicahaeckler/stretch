@@ -144,19 +144,13 @@ async function seedSchedules() {
 
 export async function GET() {
   try {
-    await sql`
-      ALTER TABLE workout_exercise_links ALTER COLUMN rest DROP NOT NULL;
-    `;
-    await sql`
-      ALTER TABLE workout_exercise_links ALTER COLUMN reps DROP NOT NULL;
-    `;
-    // const result = await sql.begin((sql) => [
-    //   // seedUsers(),
-    //   // seedWorkouts(),
-    //   // seedExercises(),
-    //   // seedWorkoutExerciseLinks(),
-    //   // seedSchedules()
-    // ]);
+    await sql.begin(() => [
+      seedUsers(),
+      seedWorkouts(),
+      seedExercises(),
+      seedWorkoutExerciseLinks(),
+      seedSchedules(),
+    ]);
 
     return Response.json({ message: "Database seeded successfully" });
   } catch (error) {
