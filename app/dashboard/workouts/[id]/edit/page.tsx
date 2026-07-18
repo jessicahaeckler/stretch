@@ -1,5 +1,6 @@
 import Form from "@/app/ui/workouts/edit-form";
 import Breadcrumbs from "@/app/ui/workouts/breadcrumbs";
+import { notFound } from "next/navigation";
 import {
   fetchExercises,
   fetchWorkoutById,
@@ -14,6 +15,9 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     fetchExercises(),
     fetchExerciseLinksById(id),
   ]);
+  if (!workout) {
+    notFound();
+  }
   return (
     <main>
       <Breadcrumbs

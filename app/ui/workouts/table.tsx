@@ -2,7 +2,7 @@ import Image from "next/image";
 import { UpdateWorkout, DeleteWorkout } from "@/app/ui/workouts/buttons";
 import { fetchFilteredWorkouts } from "@/app/lib/data";
 
-export default async function InvoicesTable({
+export default async function WorkoutsTable({
   query,
   currentPage,
 }: {

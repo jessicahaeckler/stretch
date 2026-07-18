@@ -1,4 +1,4 @@
-import postgres from 'postgres';
+import postgres from "postgres";
 import {
   User,
   WorkoutUser,
@@ -7,10 +7,10 @@ import {
   ScheduleWorkout,
   FullWorkoutUser,
   WorkoutForm,
-  WorkoutExerciseLinkForm
-} from './definitions';
+  WorkoutExerciseLinkForm,
+} from "./definitions";
 
-const sql = postgres(process.env.STORAGE_POSTGRES_URL!, { ssl: 'require' });
+const sql = postgres(process.env.STORAGE_POSTGRES_URL!, { ssl: "require" });
 
 export async function fetchUser() {
   try {
@@ -18,8 +18,8 @@ export async function fetchUser() {
 
     return data;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch revenue data.");
   }
 }
 
@@ -31,18 +31,13 @@ export async function fetchLatestWorkouts() {
       JOIN users ON users.id = workouts.user_id
       ;`;
 
-
-    // `SELECT workouts.name as workout_name, users.name as user_name
-    //   FROM workouts
-    //   JOIN users ON users.id = workouts.user_id;`;
-
     const workouts = data.map((workout) => ({
-      ...workout
+      ...workout,
     }));
     return workouts;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch the latest workouts.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch the latest workouts.");
   }
 }
 export async function fetchLatestExercises() {
@@ -53,19 +48,15 @@ export async function fetchLatestExercises() {
       ;`;
 
     const exercises = data.map((exercise) => ({
-      ...exercise
+      ...exercise,
     }));
     return exercises;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch the latest exercises.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch the latest exercises.");
   }
 }
 export async function fetchWeekSchedule() {
-  const curr_date = new Date();
-  const sunday = curr_date.getDate() - curr_date.getDay();
-  const begin_date = new Date(curr_date.setDate(sunday));
-  const end_date = new Date(curr_date.setDate(sunday + 6));
   try {
     const data = await sql<ScheduleWorkout[]>`
       SELECT schedules.id, workouts.name, schedules.status, schedules.date_completed
@@ -76,49 +67,14 @@ export async function fetchWeekSchedule() {
     `;
 
     const schedules = data.map((schedule) => ({
-      ...schedule
+      ...schedule,
     }));
     return schedules;
   } catch (error) {
-    console.error('Database Error:', error);
+    console.error("Database Error:", error);
     throw new Error(`Failed to fetch the latest schedules. ${error}`);
   }
 }
-
-// export async function fetchCardData() {
-//   try {
-//     // You can probably combine these into a single SQL query
-//     // However, we are intentionally splitting them to demonstrate
-//     // how to initialize multiple queries in parallel with JS.
-//     const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
-//     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-//     const invoiceStatusPromise = sql`SELECT
-//          SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-//          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-//          FROM invoices`;
-
-//     const data = await Promise.all([
-//       invoiceCountPromise,
-//       customerCountPromise,
-//       invoiceStatusPromise,
-//     ]);
-
-//     const numberOfInvoices = Number(data[0][0].count ?? '0');
-//     const numberOfCustomers = Number(data[1][0].count ?? '0');
-//     const totalPaidInvoices = formatCurrency(data[2][0].paid ?? '0');
-//     const totalPendingInvoices = formatCurrency(data[2][0].pending ?? '0');
-
-//     return {
-//       numberOfCustomers,
-//       numberOfInvoices,
-//       totalPaidInvoices,
-//       totalPendingInvoices,
-//     };
-//   } catch (error) {
-//     console.error('Database Error:', error);
-//     throw new Error('Failed to fetch card data.');
-//   }
-// }
 
 const ITEMS_PER_PAGE = 6;
 export async function fetchFilteredWorkouts(
@@ -147,8 +103,8 @@ export async function fetchFilteredWorkouts(
 
     return workouts;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch workouts.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch workouts.");
   }
 }
 
@@ -165,8 +121,8 @@ export async function fetchWorkoutsPages(query: string) {
     const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
     return totalPages;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of workouts.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch total number of workouts.");
   }
 }
 
@@ -185,8 +141,8 @@ export async function fetchWorkoutById(id: string) {
 
     return workout[0];
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch workout.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch workout.");
   }
 }
 
@@ -205,8 +161,8 @@ export async function fetchExerciseLinksById(id: string) {
 
     return links;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch links.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch links.");
   }
 }
 
@@ -222,8 +178,8 @@ export async function fetchExercises() {
 
     return exercises;
   } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch all exercises.');
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch all exercises.");
   }
 }
 
