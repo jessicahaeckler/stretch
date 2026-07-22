@@ -1,31 +1,32 @@
 "use server";
 
-import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import postgres from "postgres";
+import { signIn, auth } from "@/auth";
+import { AuthError } from "next-auth";
+import { WorkoutSchema } from "./zod";
 
 const sql = postgres(process.env.STORAGE_POSTGRES_URL!, { ssl: "require" });
 
-const FormSchema = z.object({
-  id: z.string(),
-  name: z.string().trim().min(1, "Please enter a workout name."),
-  exercises: z.array(
-    z.object({
-      id: z.nullable(z.string().optional()),
-      exerciseid: z.string(),
-      reps: z.nullable(z.number().optional()),
-      time: z.nullable(z.string().optional()),
-      rest: z.nullable(z.string().optional()),
-    }),
-  ),
-  schedule: z.array(z.string()),
-  status: z.enum(["public", "private"], {
-    error: "Please select a workout status.",
-  }),
-  date: z.string(),
-  deletedExercises: z.array(z.string()).optional(),
-});
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn("credentials", formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return "Invalid credentials.";
+        default:
+          return "Something went wrong.";
+      }
+    }
+    throw error;
+  }
+}
 
 export type State = {
   errors?: {
@@ -35,7 +36,7 @@ export type State = {
   message?: string | null;
 };
 
-const CreateWorkout = FormSchema.omit({ id: true, date: true });
+const CreateWorkout = WorkoutSchema.omit({ id: true, date: true });
 
 export async function createWorkout(prevState: State, formData: FormData) {
   let parsedExercises: unknown;
@@ -61,13 +62,19 @@ export async function createWorkout(prevState: State, formData: FormData) {
 
   const { name, exercises, schedule, status } = validatedFields.data;
   const date = new Date().toISOString().split("T")[0];
+  const session = await auth();
+  if (!session?.user?.id) {
+    throw new Error("Unauthorized");
+  }
+
+  const userId = session.user.id;
 
   // TODO: Change this to current user - hard coding the user id until users/login is set up
   try {
     await sql.begin(async (sql) => {
       const [{ id }] = await sql`
           INSERT INTO workouts (user_id, name, status, schedule_days, duration, date_entered)
-          VALUES ('410544b2-4001-4271-9855-fec4b6a6442a', ${name}, ${status}, ${schedule}, ${"00:00:00"}, ${date}) RETURNING id;
+          VALUES (${userId}, ${name}, ${status}, ${schedule}, ${"00:00:00"}, ${date}) RETURNING id;
         `;
       for (const exercise of exercises) {
         const time =
@@ -94,7 +101,7 @@ export async function createWorkout(prevState: State, formData: FormData) {
   redirect("/dashboard/workouts");
 }
 
-const UpdateWorkout = FormSchema.omit({ id: true, date: true });
+const UpdateWorkout = WorkoutSchema.omit({ id: true, date: true });
 
 export async function updateWorkout(
   id: string,
