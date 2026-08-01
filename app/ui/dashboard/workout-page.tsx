@@ -25,7 +25,7 @@ export default async function WorkoutPage() {
               key={workout.id}
               className="flex flex-col items-center gap-2 rounded-xl bg-white p-4"
             >
-              <div className="w-full rounded-md bg-blue-300"></div>
+              <div className="w-full rounded-md bg-green-300"></div>
               <Image
                 src="/snail.jpg"
                 width={1000}

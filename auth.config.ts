@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from "next-auth";
+import { getUser, createUser } from "./app/lib/data";
 
 export const authConfig = {
   pages: {
@@ -11,9 +12,21 @@ export const authConfig = {
       if (isOnDashboard) {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL("/dashboard", nextUrl));
       }
+      return true;
+    },
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        const existingUser = await getUser(user.email!);
+
+        if (!existingUser) {
+          const newUser = await createUser(user.email!, user.name ?? "User");
+          user.id = newUser.id;
+        } else {
+          user.id = existingUser.id;
+        }
+      }
+
       return true;
     },
     async jwt({ token, user }) {

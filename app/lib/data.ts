@@ -12,14 +12,40 @@ import {
 
 const sql = postgres(process.env.STORAGE_POSTGRES_URL!, { ssl: "require" });
 
-export async function fetchUser() {
+export async function getAuthUser(email: string) {
   try {
-    const data = await sql<User[]>`SELECT * FROM user`;
-
-    return data;
+    const user = await sql<
+      User[]
+    >`SELECT * FROM users WHERE email=${email} AND password IS NOT NULL`;
+    return user[0];
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch user data.");
+    console.error("Failed to fetch user:", error);
+    throw new Error("Failed to fetch user.");
+  }
+}
+
+export async function getUser(email: string) {
+  try {
+    const user = await sql<User[]>`SELECT * FROM users WHERE email=${email}`;
+    return user[0];
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
+    throw new Error("Failed to fetch user.");
+  }
+}
+
+export async function createUser(email: string, name: string) {
+  try {
+    const user = await sql<User[]>`
+      INSERT INTO users (email, username)
+      VALUES (${email}, ${name})
+      RETURNING *
+    `;
+
+    return user[0];
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
+    throw new Error("Failed to fetch user.");
   }
 }
 

@@ -12,6 +12,9 @@
 
 # testing
 /coverage
+/app/query
+/app/seed
+/app/lib/placeholder-data
 
 # next.js
 /.next/
