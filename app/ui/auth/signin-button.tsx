@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { signInWithGoogle } from "@/app/lib/auth-actions";
 import googleLogo from "@/public/google.png";
-import { Button } from "./button";
+import { Button } from "../button";
 import Image from "next/image";
 
 export default function SignIn() {

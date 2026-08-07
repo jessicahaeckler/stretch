@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { authConfig } from "./auth.config";
 import bcrypt from "bcrypt";
-import { signInSchema } from "./app/lib/zod";
+import { signInSchema } from "@/validators/signin-validators";
 import Google from "next-auth/providers/google";
 import { getAuthUser } from "./app/lib/data";
 // TODO: add 2fa

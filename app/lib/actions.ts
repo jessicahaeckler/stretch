@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import postgres from "postgres";
 import { signIn, auth } from "@/auth";
 import { AuthError } from "next-auth";
-import { WorkoutSchema } from "./zod";
+import { WorkoutSchema } from "@/validators/workout-validators";
 
 const sql = postgres(process.env.STORAGE_POSTGRES_URL!, { ssl: "require" });
 

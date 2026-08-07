@@ -6,11 +6,11 @@ import {
   KeyIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
-import { Button } from "./button";
+import { Button } from "../button";
 import { useActionState } from "react";
 import { authenticate } from "@/app/lib/actions";
 import { useSearchParams } from "next/navigation";
-import SignIn from "./sign-in";
+import SignIn from "./signin-button";
 import Link from "next/link";
 import clsx from "clsx";
 
@@ -105,7 +105,7 @@ export default function LoginForm() {
           <p className="hidden md:block">Don&apos;t have an account?</p>
           <Link
             key="create-account"
-            href="/sign-up"
+            href="/auth/sign-up"
             className="underline flex h-[20px] grow items-center justify-center gap-2 rounded-md font-medium hover:text-blue-600 md:flex-none md:justify-start"
           >
             Sign up
