@@ -5,6 +5,7 @@ import { signUpSchema } from "@/validators/signup-validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import Link from "next/link";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,8 +24,10 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { signupUserAction } from "@/actions/signup-user-action";
+import { OAuthSigninButtons } from "./oauth-signin-button";
 
 export default function SignupForm() {
+  const [success, setSuccess] = useState(false);
   const form = useForm<z.input<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -35,12 +38,12 @@ export default function SignupForm() {
     },
   });
 
-  const { handleSubmit, control, formState, reset, setError } = form;
+  const { handleSubmit, control, formState, setError } = form;
   const submit = async (values: z.input<typeof signUpSchema>) => {
     const res = await signupUserAction(values);
 
     if (res.success) {
-      reset();
+      setSuccess(true);
     } else {
       switch (res.statusCode) {
         case 400:
@@ -54,12 +57,31 @@ export default function SignupForm() {
             });
           }
           break;
+        case 409:
         case 500:
+        default:
           const error = res.error || "Internal Server Error";
           setError("confirmPassword", { message: error });
       }
     }
   };
+
+  if (success) {
+    return (
+      <div>
+        <p> User successfully created!</p>
+
+        <span>
+          Click{" "}
+          <Button variant="link" size="sm" className="px-0">
+            <Link href="/auth/sign-in">here</Link>
+          </Button>{" "}
+          to sign in.
+        </span>
+      </div>
+    );
+  }
+
   return (
     <Card className="bg-gray-50 pt-8">
       <form
@@ -168,6 +190,17 @@ export default function SignupForm() {
                 Sign up
               </Button>
             </Field>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-gray-50 px-2 text-muted-foreground">
+                  OR
+                </span>
+              </div>
+            </div>
+            <OAuthSigninButtons signup={true} />
           </FieldGroup>
         </CardContent>
       </form>
@@ -176,7 +209,7 @@ export default function SignupForm() {
           <p className="hidden md:block">Already have an account?</p>
           <Link
             key="create-account"
-            href="/auth/login"
+            href="/auth/sign-in"
             className="underline flex h-[20px] grow items-center justify-center gap-2 rounded-md font-medium hover:text-blue-600 md:flex-none md:justify-start"
           >
             Sign in

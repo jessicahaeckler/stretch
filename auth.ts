@@ -1,19 +1,19 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 import { authConfig } from "./auth.config";
 import bcrypt from "bcrypt";
 import { signInSchema } from "@/validators/signin-validators";
-import Google from "next-auth/providers/google";
-import { getAuthUser } from "./app/lib/data";
+import { findUserByEmail } from "./resources/user-queries";
 // TODO: add 2fa
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+const nextAuth = NextAuth({
   ...authConfig,
   session: {
     strategy: "jwt",
-    maxAge: 60 * 30,
-    updateAge: 60 * 10,
   },
+  secret: process.env.AUTH_SECRET,
+  pages: { signIn: "/auth/sign-in" },
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID!,
@@ -25,11 +25,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
-          const user = await getAuthUser(email);
+          const user = await findUserByEmail(email);
           if (!user) return null;
-          const passwordsMatch = await bcrypt.compare(password, user.password);
+          if (!user.password) return null;
 
-          if (passwordsMatch) return user;
+          const passwordsMatch = await bcrypt.compare(password, user.password);
+          if (passwordsMatch) {
+            const { password, ...userWithoutPassword } = user;
+            console.log("userWithoutPassword", userWithoutPassword);
+            return userWithoutPassword;
+          }
         }
 
         console.log("Invalid credentials");
@@ -37,4 +42,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.username = user?.username;
+      }
+
+      return token;
+    },
+
+    async session({ session, token }) {
+      session.user.id = token.id as string;
+      session.user.username = token.username as string;
+
+      return session;
+    },
+  },
 });
+
+export const { handlers, auth, signIn, signOut } = nextAuth;

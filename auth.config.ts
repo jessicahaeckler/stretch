@@ -3,7 +3,7 @@ import { getUser, createUser } from "./app/lib/data";
 
 export const authConfig = {
   pages: {
-    signIn: "/auth/login",
+    signIn: "/auth/sign-in",
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
