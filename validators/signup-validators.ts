@@ -2,7 +2,7 @@ import z from "zod";
 
 export const signUpSchema = z
   .object({
-    username: z
+    name: z
       .string({ error: "Name must be text" })
       .min(6, "Name must be more than 6 characters")
       .optional()

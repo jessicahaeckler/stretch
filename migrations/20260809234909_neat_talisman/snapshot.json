@@ -352,7 +352,7 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "username",
+      "name": "name",
       "entityType": "columns",
       "schema": "public",
       "table": "user"

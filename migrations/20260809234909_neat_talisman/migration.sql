@@ -32,7 +32,7 @@ CREATE TABLE "session" (
 --> statement-breakpoint
 CREATE TABLE "user" (
 	"id" text PRIMARY KEY,
-	"username" text,
+	"name" text,
 	"email" text UNIQUE,
 	"emailVerified" timestamp,
 	"image" text,

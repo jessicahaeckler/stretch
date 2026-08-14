@@ -29,7 +29,7 @@ export async function signupUserAction(values: unknown): Promise<Res> {
     return { success: false, error: flatErrors, statusCode: 400 };
   }
 
-  const { username, email, password } = parsedValues.data;
+  const { name, email, password } = parsedValues.data;
 
   // check for existing email
   try {
@@ -52,7 +52,7 @@ export async function signupUserAction(values: unknown): Promise<Res> {
     console.log("hashed password", hash);
     const newUser = await db
       .insert(users)
-      .values({ username, email, password: hash })
+      .values({ name, email, password: hash })
       .returning({ id: users.id })
       .then((res) => res[0]);
     console.log({ insertedID: newUser.id });

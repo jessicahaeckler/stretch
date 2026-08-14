@@ -31,7 +31,7 @@ export default function SignupForm() {
   const form = useForm<z.input<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      username: "",
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -95,7 +95,7 @@ export default function SignupForm() {
         <CardContent>
           <FieldGroup>
             <Controller
-              name="username"
+              name="name"
               control={control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>

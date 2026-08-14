@@ -28,7 +28,7 @@ const SignedIn = ({ user }: { user: User }) => {
         </thead>
         <tbody>
           <tr className="divide-x">
-            <td className="px-6 py-3">{user.username || "NULL"}</td>
+            <td className="px-6 py-3">{user.name || "NULL"}</td>
             <td className="px-6 py-3">{user.email || "NULL"}</td>
           </tr>
         </tbody>

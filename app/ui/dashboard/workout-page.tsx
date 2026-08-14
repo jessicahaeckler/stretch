@@ -34,7 +34,7 @@ export default async function WorkoutPage() {
                 alt="A snail"
               />
               <p className="text-sm text-gray-500">{workout.name}</p>
-              <p className="text-sm text-gray-400 p-4">{workout.username}</p>
+              <p className="text-sm text-gray-400 p-4">{workout.name}</p>
             </div>
           ))}
         </div>
