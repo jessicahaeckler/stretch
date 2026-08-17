@@ -1,21 +1,16 @@
-import { DefaultSession } from "next-auth";
-import "next-auth/jwt";
+import type { JWT as DefaultJWT } from "next-auth/jwt";
+import type { User as DefaultUser } from "next-auth";
+import { users } from "@/drizzle/schema";
 
 declare module "next-auth" {
-  interface User {
-    name?: string | null;
-  }
-
-  interface Session {
-    user: {
-      id: string;
-      name?: string | null;
-    } & DefaultSession["user"];
+  interface User extends DefaultUser {
+    role: (typeof users.$inferSelect)["role"];
   }
 }
 
 declare module "next-auth/jwt" {
-  interface JWT {
-    name?: string | null;
+  interface JWT extends DefaultJWT {
+    id: (typeof users.$inferSelect)["id"];
+    role: (typeof users.$inferSelect)["role"];
   }
 }

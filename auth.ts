@@ -1,23 +1,57 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
-import { authConfig } from "./auth.config";
+import Github from "next-auth/providers/github";
+import * as schema from "@/drizzle/schema";
 import bcrypt from "bcrypt";
 import { signInSchema } from "@/validators/signin-validators";
 import { findUserByEmail } from "./resources/user-queries";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { db } from "@/drizzle";
+import { OAuthVerifyEmailAction } from "./actions/oauth-verify-email-action";
 // TODO: add 2fa
 
 const nextAuth = NextAuth({
-  ...authConfig,
+  // ...authConfig,
+  adapter: DrizzleAdapter(db, {
+    accountsTable: schema.accounts,
+    usersTable: schema.users,
+    authenticatorsTable: schema.authenticators,
+    sessionsTable: schema.sessions,
+    verificationTokensTable: schema.verificationTokens,
+  }),
   session: {
     strategy: "jwt",
   },
   secret: process.env.AUTH_SECRET,
   pages: { signIn: "/auth/sign-in" },
+  callbacks: {
+    jwt({ token, user }) {
+      if (user?.id) token.id = user.id;
+      if (user?.role) token.role = user.role;
+      return token;
+    },
+    session({ session, token }) {
+      session.user.id = token.id;
+      session.user.role = token.role;
+      return session;
+    },
+  },
+  events: {
+    async linkAccount({ user, account }) {
+      if (["google", "github"].includes(account.provider)) {
+        if (user.email) await OAuthVerifyEmailAction(user.email);
+      }
+    },
+  },
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID!,
       clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+    }),
+    Github({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
     Credentials({
       async authorize(credentials) {
@@ -42,22 +76,6 @@ const nextAuth = NextAuth({
       },
     }),
   ],
-
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-
-      return token;
-    },
-
-    async session({ session, token }) {
-      session.user.id = token.id as string;
-
-      return session;
-    },
-  },
 });
 
 export const { handlers, auth, signIn, signOut } = nextAuth;
