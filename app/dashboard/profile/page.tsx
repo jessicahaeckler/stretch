@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { type User } from "next-auth";
 import Link from "next/link";
+import { UpdateUserInfoForm } from "./_components/update-user-info-form";
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -18,7 +19,10 @@ export default async function ProfilePage() {
 const SignedIn = ({ user }: { user: User }) => {
   return (
     <>
-      <h2 className="text-2xl font-bold tracking-tight">User Information</h2>
+      <div className="flex item-center justify-between">
+        <h2 className="text-2xl font-bold tracking-tight">User Information</h2>
+        <UpdateUserInfoForm user={user} />
+      </div>
       <table className="mt-4 table-auto divide-y">
         <thead>
           <tr className="divide-x">

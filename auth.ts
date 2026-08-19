@@ -26,7 +26,10 @@ const nextAuth = NextAuth({
   secret: process.env.AUTH_SECRET,
   pages: { signIn: "/auth/sign-in" },
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user, trigger, session }) {
+      if (trigger === "update") {
+        return { ...token, ...session.user };
+      }
       if (user?.id) token.id = user.id;
       if (user?.role) token.role = user.role;
       return token;
@@ -35,6 +38,21 @@ const nextAuth = NextAuth({
       session.user.id = token.id;
       session.user.role = token.role;
       return session;
+    },
+    signIn({ user, account, profile }) {
+      if (account?.provider === "google") {
+        return !!profile?.email_verified;
+      }
+      if (account?.provider === "github") {
+        return true;
+      }
+      if (account?.provider === "credentials") {
+        if (user.emailVerified) {
+          // return true;
+        }
+        return true;
+      }
+      return false;
     },
   },
   events: {

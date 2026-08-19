@@ -1,6 +1,7 @@
 import SideNav from "@/app/ui/dashboard/sidenav";
 import TopNav from "@/app/ui/dashboard/topnav";
 import { Providers } from "../ui/auth/providers";
+import { SessionProvider } from "next-auth/react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -12,7 +13,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Providers>
           <TopNav />
         </Providers>
-        <div className="p-6 md:p-12 md:overflow-y-auto">{children}</div>
+        <SessionProvider>
+          <div className="p-6 md:p-12 md:overflow-y-auto">{children}</div>
+        </SessionProvider>
       </div>
     </div>
   );
