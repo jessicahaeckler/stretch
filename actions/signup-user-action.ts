@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import { db } from "@/drizzle";
 import { lower, users } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
+import { USER_ROLES } from "@/app/lib/constants";
 
 type Res =
   | { success: true }
@@ -39,7 +40,7 @@ export async function signupUserAction(values: unknown): Promise<Res> {
       .where(eq(lower(users.email), email.toLowerCase()))
       .then((res) => res?.[0] ?? null);
 
-    if (existingUser.id) {
+    if (existingUser?.id) {
       return { success: false, error: "Email already exists", statusCode: 409 };
     }
   } catch (error) {
@@ -49,10 +50,16 @@ export async function signupUserAction(values: unknown): Promise<Res> {
 
   try {
     const hash = bcrypt.hashSync(password, 10);
-    console.log("hashed password", hash);
+    const isAdmin =
+      process.env.ADMIN_EMAIL_ADDRESS?.toLowerCase() === email.toLowerCase();
     const newUser = await db
       .insert(users)
-      .values({ name, email, password: hash })
+      .values({
+        name,
+        email,
+        password: hash,
+        role: isAdmin ? USER_ROLES.ADMIN : USER_ROLES.STANDARD,
+      })
       .returning({ id: users.id })
       .then((res) => res[0]);
     console.log({ insertedID: newUser.id });

@@ -35,6 +35,12 @@ export async function signinUserAction(
             error: "Invalid Credentials",
             statusCode: 401,
           };
+        case "OAuthAccountAlreadyLinkedError" as AuthError["type"]:
+          return {
+            success: false,
+            error: "Login with your Google or Github",
+            statusCode: 401,
+          };
         default:
           return {
             success: false,

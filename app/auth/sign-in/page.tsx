@@ -1,8 +1,8 @@
 import StretchLogo from "@/app/ui/bug-logo";
-import LoginForm from "@/app/ui/auth/signin-form";
+import SigninForm, { SigninFormSkeleton } from "@/app/ui/auth/signin-form";
 import { Suspense } from "react";
 
-export default function LoginPage() {
+export default function SigninPage() {
   return (
     <main className="flex items-center justify-center md:h-screen">
       <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
@@ -11,8 +11,8 @@ export default function LoginPage() {
             <StretchLogo />
           </div>
         </div>
-        <Suspense>
-          <LoginForm />
+        <Suspense fallback={<SigninFormSkeleton />}>
+          <SigninForm />
         </Suspense>
       </div>
     </main>

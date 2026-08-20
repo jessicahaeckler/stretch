@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { type User } from "next-auth";
 import Link from "next/link";
 import { UpdateUserInfoForm } from "./_components/update-user-info-form";
+import { redirect } from "next/navigation";
 
 export default async function ProfilePage() {
   const session = await auth();
+  if (!session) redirect("/auth/sign-in");
   console.log("session", session);
 
   return (

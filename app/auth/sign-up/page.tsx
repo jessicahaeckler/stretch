@@ -1,5 +1,5 @@
 import StretchLogo from "@/app/ui/bug-logo";
-import SignupForm from "@/app/ui/auth/signup-form";
+import SignupForm, { SignupFormSkeleton } from "@/app/ui/auth/signup-form";
 import { Suspense } from "react";
 
 export default function SignupPage() {
@@ -11,7 +11,7 @@ export default function SignupPage() {
             <StretchLogo />
           </div>
         </div>
-        <Suspense>
+        <Suspense fallback={<SignupFormSkeleton />}>
           <SignupForm />
         </Suspense>
       </div>

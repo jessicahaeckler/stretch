@@ -219,3 +219,41 @@ export default function SignupForm() {
     </Card>
   );
 }
+
+export const SignupFormSkeleton = () => {
+  return (
+    <Card className="bg-gray-50 pt-8">
+      <form id="sign-up" className="space-y-8 max-w-[400px]">
+        <CardHeader>
+          <CardTitle>Please sign up to continue</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <FieldGroup>
+            <div className="h-10 w-full rounded-md bg-gray-200" />
+            <div className="h-10 w-full rounded-md bg-gray-200" />
+            <div className="h-10 w-full rounded-md bg-gray-200" />
+            <div className="h-10 w-full rounded-md bg-gray-200" />
+            <Field orientation="horizontal">
+              <div className="h-10 w-full rounded-md bg-gray-200" />
+            </Field>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-gray-50 px-2 text-muted-foreground">
+                  OR
+                </span>
+              </div>
+            </div>
+            <div className="h-10 w-full rounded-md bg-gray-200" />
+            <div className="h-10 w-full rounded-md bg-gray-200" />
+          </FieldGroup>
+        </CardContent>
+      </form>
+      <CardFooter>
+        <div className="h-10 w-full rounded-md bg-gray-200" />
+      </CardFooter>
+    </Card>
+  );
+};
