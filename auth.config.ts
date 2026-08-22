@@ -3,21 +3,40 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "@/drizzle";
 import * as schema from "@/drizzle/schema";
 import { OAuthVerifyEmailAction } from "./actions/oauth-verify-email-action";
-import { USER_ROLES } from "./app/lib/constants";
-import { changeUserRoleAction } from "./actions/change-user-role-action";
+import type { AdapterUser } from "@auth/core/adapters";
+import { getTableColumns } from "drizzle-orm";
+import { Awaitable } from "@auth/core/types";
 
 export const authConfig = {
+  adapter: {
+    ...DrizzleAdapter(db, {
+      accountsTable: schema.accounts,
+      usersTable: schema.users,
+      authenticatorsTable: schema.authenticators,
+      sessionsTable: schema.sessions,
+      verificationTokensTable: schema.verificationTokens,
+    }),
+    async createUser(data: AdapterUser) {
+      const { id, ...insertData } = data;
+      const hasDefaultId = getTableColumns(schema.users)["id"]["hasDefault"];
+      // Handling admin w/ email address
+      // const isAdmin =
+      //   process.env.ADMIN_EMAIL_ADDRESS?.toLowerCase() ===
+      //   insertData.email.toLowerCase();
+
+      // if (isAdmin) insertData.role = USER_ROLES.ADMIN;
+
+      return db
+        .insert(schema.users)
+        .values(hasDefaultId ? insertData : { ...insertData, id })
+        .returning()
+        .then((res) => res[0]) as Awaitable<AdapterUser>;
+    },
+  },
+  secret: process.env.AUTH_SECRET,
   session: {
     strategy: "jwt",
   },
-  secret: process.env.AUTH_SECRET,
-  adapter: DrizzleAdapter(db, {
-    accountsTable: schema.accounts,
-    usersTable: schema.users,
-    authenticatorsTable: schema.authenticators,
-    sessionsTable: schema.sessions,
-    verificationTokensTable: schema.verificationTokens,
-  }),
   pages: {
     signIn: "/auth/sign-in",
   },
@@ -27,15 +46,15 @@ export const authConfig = {
         if (user.email) await OAuthVerifyEmailAction(user.email);
       }
     },
-    async createUser({ user }) {
-      if (
-        user.email &&
-        process.env.ADMIN_EMAIL_ADDRESS?.toLowerCase() ===
-          user.email.toLowerCase()
-      ) {
-        await changeUserRoleAction(user.email, USER_ROLES.ADMIN);
-      }
-    },
+    // async createUser({ user }) {
+    //   if (
+    //     user.email &&
+    //     process.env.ADMIN_EMAIL_ADDRESS?.toLowerCase() ===
+    //       user.email.toLowerCase()
+    //   ) {
+    //     await changeUserRoleAction(user.email, USER_ROLES.ADMIN);
+    //   }
+    // },
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
@@ -58,13 +77,6 @@ export const authConfig = {
       }
       if (user?.id) token.id = user.id;
       if (user?.role) token.role = user.role;
-      if (
-        user?.email &&
-        process.env.ADMIN_EMAIL_ADDRESS?.toLowerCase() ===
-          user.email.toLowerCase()
-      ) {
-        token.role = USER_ROLES.ADMIN;
-      }
       return token;
     },
     session({ session, token }) {

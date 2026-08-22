@@ -5,15 +5,25 @@ import { type User } from "next-auth";
 import Link from "next/link";
 import { UpdateUserInfoForm } from "./_components/update-user-info-form";
 import { redirect } from "next/navigation";
+import { USER_ROLES } from "@/app/lib/constants";
+import { LockIcon } from "lucide-react";
 
 export default async function ProfilePage() {
   const session = await auth();
   if (!session) redirect("/auth/sign-in");
-  console.log("session", session);
+  const isAdmin = session?.user?.role === USER_ROLES.ADMIN;
 
   return (
-    <div>
-      {!!session?.user ? <SignedIn user={session.user} /> : <SignedOut />}
+    <div className="container">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold tracking-tight">Profile</h1>
+        {/* make this a sidebar later */}
+        {isAdmin && <AdminPanelButton />}
+      </div>
+      <div className="my-2 h-1 bg-muted" />
+      <div>
+        {!!session?.user ? <SignedIn user={session.user} /> : <SignedOut />}
+      </div>
     </div>
   );
 }
@@ -57,5 +67,15 @@ const SignedOut = () => {
         <Link href="/auth/sign-in">Sign In</Link>
       </Button>
     </>
+  );
+};
+const AdminPanelButton = () => {
+  return (
+    <Button size="lg">
+      <Link className="flex" href="/dashboard/profile/admin-panel">
+        <LockIcon className="mr-2" />
+        Admin Panel
+      </Link>
+    </Button>
   );
 };

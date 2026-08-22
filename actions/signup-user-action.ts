@@ -50,15 +50,16 @@ export async function signupUserAction(values: unknown): Promise<Res> {
 
   try {
     const hash = bcrypt.hashSync(password, 10);
-    const isAdmin =
-      process.env.ADMIN_EMAIL_ADDRESS?.toLowerCase() === email.toLowerCase();
+    // handling roles w/ email
+    // const isAdmin =
+    //   process.env.ADMIN_EMAIL_ADDRESS?.toLowerCase() === email.toLowerCase();
     const newUser = await db
       .insert(users)
       .values({
         name,
         email,
         password: hash,
-        role: isAdmin ? USER_ROLES.ADMIN : USER_ROLES.STANDARD,
+        role: USER_ROLES.STANDARD,
       })
       .returning({ id: users.id })
       .then((res) => res[0]);
