@@ -1,5 +1,5 @@
 import { FindAllUsers } from "@/resources/user-queries";
-import { USER_ROLES } from "@/app/lib/constants";
+import { USER_ROLES } from "@/lib/constants";
 import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";

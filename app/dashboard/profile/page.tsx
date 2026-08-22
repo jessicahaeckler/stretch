@@ -5,8 +5,9 @@ import { type User } from "next-auth";
 import Link from "next/link";
 import { UpdateUserInfoForm } from "./_components/update-user-info-form";
 import { redirect } from "next/navigation";
-import { USER_ROLES } from "@/app/lib/constants";
+import { USER_ROLES } from "@/lib/constants";
 import { LockIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -47,7 +48,13 @@ const SignedIn = ({ user }: { user: User }) => {
         <tbody>
           <tr className="divide-x">
             <td className="px-6 py-3">{user.id || "NULL"}</td>
-            <td className="px-6 py-3">{user.name || "NULL"}</td>
+            <td
+              className={cn("px-6 py-3", {
+                "opacity-50": user.name === null,
+              })}
+            >
+              {user.name || "NULL"}
+            </td>
             <td className="px-6 py-3">{user.email || "NULL"}</td>
             <td className="px-6 py-3 uppercase">{user.role || "NULL"}</td>
           </tr>

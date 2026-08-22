@@ -13,6 +13,5 @@ export async function oauthSignInAction(
     if (isRedirectError(error)) {
       throw error;
     }
-    console.log(error);
   }
 }

@@ -1,6 +1,6 @@
 "use server";
 
-import { USER_ROLES } from "@/app/lib/constants";
+import { USER_ROLES } from "@/lib/constants";
 import { auth } from "@/auth";
 import { db } from "@/drizzle";
 import { users } from "@/drizzle/schema";

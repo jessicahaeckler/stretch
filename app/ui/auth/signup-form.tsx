@@ -25,9 +25,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { signupUserAction } from "@/actions/signup-user-action";
 import { OAuthSigninButtons } from "./oauth-signin-button";
+import { useRouter } from "next/navigation";
 
 export default function SignupForm() {
   const [success, setSuccess] = useState(false);
+  const router = useRouter();
   const form = useForm<z.input<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -43,7 +45,7 @@ export default function SignupForm() {
     const res = await signupUserAction(values);
 
     if (res.success) {
-      setSuccess(true);
+      router.push("/auth/sign-up/success");
     } else {
       switch (res.statusCode) {
         case 400:

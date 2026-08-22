@@ -6,7 +6,8 @@ import bcrypt from "bcrypt";
 import { db } from "@/drizzle";
 import { lower, users } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
-import { USER_ROLES } from "@/app/lib/constants";
+import { USER_ROLES } from "@/lib/constants";
+import { createVerificationTokenAction } from "./create-verification-token-action";
 
 type Res =
   | { success: true }
@@ -26,7 +27,6 @@ export async function signupUserAction(values: unknown): Promise<Res> {
 
   if (!parsedValues.success) {
     const flatErrors = z.flattenError(parsedValues.error);
-    console.log(flatErrors);
     return { success: false, error: flatErrors, statusCode: 400 };
   }
 
@@ -35,13 +35,32 @@ export async function signupUserAction(values: unknown): Promise<Res> {
   // check for existing email
   try {
     const existingUser = await db
-      .select({ id: users.id })
+      .select({
+        id: users.id,
+        email: users.email,
+        emailVerified: users.emailVerified,
+      })
       .from(users)
       .where(eq(lower(users.email), email.toLowerCase()))
       .then((res) => res?.[0] ?? null);
 
     if (existingUser?.id) {
-      return { success: false, error: "Email already exists", statusCode: 409 };
+      if (!existingUser.emailVerified && existingUser.email) {
+        const verificationToken = await createVerificationTokenAction(
+          existingUser.email,
+        );
+        return {
+          success: false,
+          error: "This users is not verified. Verification link sent.",
+          statusCode: 409,
+        };
+      } else {
+        return {
+          success: false,
+          error: "Email already exists",
+          statusCode: 409,
+        };
+      }
     }
   } catch (error) {
     console.error(error);
@@ -61,9 +80,16 @@ export async function signupUserAction(values: unknown): Promise<Res> {
         password: hash,
         role: USER_ROLES.STANDARD,
       })
-      .returning({ id: users.id })
+      .returning({
+        id: users.id,
+        email: users.email,
+        emailVerified: users.emailVerified,
+      })
       .then((res) => res[0]);
-    console.log({ insertedID: newUser.id });
+
+    const verificationToken = newUser.email
+      ? await createVerificationTokenAction(newUser.email)
+      : null;
     return { success: true };
   } catch (error) {
     console.error(error);

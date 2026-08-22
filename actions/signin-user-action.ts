@@ -35,6 +35,14 @@ export async function signinUserAction(
             error: "Invalid Credentials",
             statusCode: 401,
           };
+        case "AccessDenied":
+          // TODO: make a resend verification email page
+          return {
+            success: false,
+            error:
+              "Please verify your email, signup again to resend verification email",
+            statusCode: 401,
+          };
         case "OAuthAccountAlreadyLinkedError" as AuthError["type"]:
           return {
             success: false,

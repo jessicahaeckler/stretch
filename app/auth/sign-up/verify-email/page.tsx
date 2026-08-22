@@ -1,0 +1,71 @@
+import { verfiyCredentialsEmailAction } from "@/actions/verify-credentials-email-action";
+import { Button } from "@/components/ui/button";
+import { findVerificationTokenByToken } from "@/resources/verification-token-queries";
+import Link from "next/link";
+
+type PageProps = {
+  searchParams: {
+    token: string;
+  };
+};
+
+export default async function Page({ searchParams }: PageProps) {
+  const verificationToken = await findVerificationTokenByToken(
+    (await searchParams).token,
+  );
+
+  //   await new Promise((res) => setTimeout(res, 2000));
+  if (!verificationToken?.expires) return <TokenIsInvalidState />;
+  console.log("we have a token");
+  const isExpired = new Date(verificationToken.expires) < new Date();
+  if (isExpired) return <TokenIsInvalidState />;
+  console.log("token not expired");
+
+  // verify the user
+  const res = await verfiyCredentialsEmailAction(searchParams.token);
+  if (!res.success) return <TokenIsInvalidState />;
+
+  return (
+    <main className="mt-4">
+      <div className="container">
+        <div className="text-3xl font-bold tracking-tight">Verify Email</div>
+        <div className="my-2 h-1 bg-muted">
+          <div className="rounded bg-green-100 p-4">
+            <p>Email verified.</p>
+            <span>
+              Click{""}
+              <Button variant="link" size="sm" className="px-0">
+                <Link href="/auth/sign-up">here</Link>
+              </Button>
+              {""}
+              to sign in.
+            </span>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+export const TokenIsInvalidState = () => {
+  return (
+    <main className="mt-4">
+      <div className="container">
+        <div className="text-3xl font-bold tracking-tight">Verify Email</div>
+        <div className="my-2 h-1 bg-muted">
+          <div className="rounded bg-red-100 p-4">
+            <p>Token is invalid</p>
+            <span>
+              Click{""}
+              <Button variant="link" size="sm" className="px-0">
+                <Link href="/auth/sign-up">here</Link>
+              </Button>
+              {""}
+              to sign up again.
+            </span>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+};

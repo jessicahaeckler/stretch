@@ -6,6 +6,7 @@ import { signOut } from "@/auth";
 import SignoutButton from "../auth/signout-button";
 
 export default function SideNav() {
+  // TODO: fully delete this
   return (
     <div className="flex h-full flex-col px-3 py-4 md:px-2">
       <Link

@@ -4,7 +4,7 @@ import { db } from "@/drizzle";
 import { lower, users } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
-import { USER_ROLES } from "@/app/lib/constants";
+import { USER_ROLES } from "@/lib/constants";
 import { desc, getTableColumns } from "drizzle-orm";
 
 // ADMIN QUERIES

@@ -60,17 +60,14 @@ export const UpdateUserInfoForm = ({ user }: UpdateUserInfoFormProps) => {
       }
       router.refresh();
       setSuccess("User information updated successfully.");
-      console.log(res.data);
     } else {
       switch (res.statusCode) {
         case 400:
           const nestedErrors = res.error.fieldErrors;
-          console.log(nestedErrors);
 
           for (const key of Object.keys(nestedErrors) as Array<
             keyof typeof nestedErrors
           >) {
-            console.log(key);
             setError(key, {
               message: nestedErrors[key]?.[0],
             });

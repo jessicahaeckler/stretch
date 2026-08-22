@@ -3,7 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { signInSchema } from "@/validators/signin-validators";
 import { findUserByEmail } from "./resources/user-queries";
-import { OAuthAccountAlreadyLinkedError } from "./app/lib/custom-errors";
+import { OAuthAccountAlreadyLinkedError } from "./lib/custom-errors";
 import { authConfig } from "@/auth.config";
 import Google from "next-auth/providers/google";
 import Github from "next-auth/providers/github";
