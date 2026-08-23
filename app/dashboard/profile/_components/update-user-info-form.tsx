@@ -118,7 +118,7 @@ export const UpdateUserInfoForm = ({ user }: UpdateUserInfoFormProps) => {
                           <FieldError errors={[fieldState.error]} />
                         )}
                         {success && (
-                          <p className="text-sm font-md text-green-600">
+                          <p className="text-sm font-medium text-green-600">
                             {success}
                           </p>
                         )}

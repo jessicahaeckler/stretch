@@ -24,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { signinUserAction } from "@/actions/signin-user-action";
 import { OAuthSigninButtons } from "./oauth-signin-button";
+import { ForgotPasswordForm } from "@/app/auth/sign-in/_components/forgot-password-form";
 
 export default function SigninForm() {
   const searchParams = useSearchParams();
@@ -129,7 +130,7 @@ export default function SigninForm() {
           </FieldGroup>
         </CardContent>
       </form>
-      <CardFooter>
+      <CardFooter className="flex flex-col justify items-start!">
         <div className="flex gap-1 text-sm mb-[5px] mt-[15px]">
           <p className="hidden md:block">Don&apos;t have an account?</p>
           <Link
@@ -139,6 +140,9 @@ export default function SigninForm() {
           >
             Sign up
           </Link>
+        </div>
+        <div>
+          <ForgotPasswordForm />
         </div>
       </CardFooter>
     </Card>

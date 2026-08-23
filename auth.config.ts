@@ -92,9 +92,7 @@ export const authConfig = {
         return true;
       }
       if (account?.provider === "credentials") {
-        if (user.emailVerified) {
-          return true;
-        }
+        if (user.emailVerified) return true;
       }
       return false;
     },

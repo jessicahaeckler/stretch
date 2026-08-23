@@ -16,7 +16,7 @@ export default async function Layout({
         <Providers>
           <TopNav />
         </Providers>
-        <div className="grow p-6 md:p-12 md:overflow-y-auto">{children}</div>
+        <div className="grow p-6 md:p-12 md:overflow-y-auto ">{children}</div>
       </div>
     </div>
   );

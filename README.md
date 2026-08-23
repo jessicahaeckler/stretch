@@ -19,3 +19,7 @@ This project started by following the official Next.js App Router tutorial to le
 - Weekly scheduling
 - User accounts
 - Progress tracking
+  USERS
+- delete verification tokens
+- allow user to edit images
+-

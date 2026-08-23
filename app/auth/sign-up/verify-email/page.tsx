@@ -4,15 +4,14 @@ import { findVerificationTokenByToken } from "@/resources/verification-token-que
 import Link from "next/link";
 
 type PageProps = {
-  searchParams: {
+  searchParams: Promise<{
     token: string;
-  };
+  }>;
 };
 
 export default async function Page({ searchParams }: PageProps) {
-  const verificationToken = await findVerificationTokenByToken(
-    (await searchParams).token,
-  );
+  const { token } = await searchParams;
+  const verificationToken = await findVerificationTokenByToken(token);
 
   //   await new Promise((res) => setTimeout(res, 2000));
   if (!verificationToken?.expires) return <TokenIsInvalidState />;
@@ -22,7 +21,7 @@ export default async function Page({ searchParams }: PageProps) {
   console.log("token not expired");
 
   // verify the user
-  const res = await verfiyCredentialsEmailAction(searchParams.token);
+  const res = await verfiyCredentialsEmailAction(token);
   if (!res.success) return <TokenIsInvalidState />;
 
   return (
@@ -33,11 +32,10 @@ export default async function Page({ searchParams }: PageProps) {
           <div className="rounded bg-green-100 p-4">
             <p>Email verified.</p>
             <span>
-              Click{""}
+              Click{" "}
               <Button variant="link" size="sm" className="px-0">
-                <Link href="/auth/sign-up">here</Link>
-              </Button>
-              {""}
+                <Link href="/auth/sign-in">here</Link>
+              </Button>{" "}
               to sign in.
             </span>
           </div>
@@ -56,11 +54,10 @@ export const TokenIsInvalidState = () => {
           <div className="rounded bg-red-100 p-4">
             <p>Token is invalid</p>
             <span>
-              Click{""}
+              Click{" "}
               <Button variant="link" size="sm" className="px-0">
                 <Link href="/auth/sign-up">here</Link>
-              </Button>
-              {""}
+              </Button>{" "}
               to sign up again.
             </span>
           </div>

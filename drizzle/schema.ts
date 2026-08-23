@@ -55,11 +55,9 @@ export const accounts = pgTable(
     session_state: text("session_state"),
   },
   (account) => [
-    {
-      compoundKey: primaryKey({
-        columns: [account.provider, account.providerAccountId],
-      }),
-    },
+    primaryKey({
+      columns: [account.provider, account.providerAccountId],
+    }),
   ],
 );
 
@@ -79,11 +77,9 @@ export const verificationTokens = pgTable(
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
   (verificationToken) => [
-    {
-      compositePk: primaryKey({
-        columns: [verificationToken.identifier, verificationToken.token],
-      }),
-    },
+    primaryKey({
+      columns: [verificationToken.identifier, verificationToken.token],
+    }),
   ],
 );
 
@@ -102,11 +98,9 @@ export const authenticators = pgTable(
     transports: text("transports"),
   },
   (authenticator) => [
-    {
-      compositePK: primaryKey({
-        columns: [authenticator.userId, authenticator.credentialID],
-      }),
-    },
+    primaryKey({
+      columns: [authenticator.userId, authenticator.credentialID],
+    }),
   ],
 );
 
@@ -140,11 +134,9 @@ export const savedWorkouts = pgTable(
     schedule_days: text("schedule_days"),
   },
   (savedWorkout) => [
-    {
-      compositePK: primaryKey({
-        columns: [savedWorkout.userId, savedWorkout.workoutId],
-      }),
-    },
+    primaryKey({
+      columns: [savedWorkout.userId, savedWorkout.workoutId],
+    }),
   ],
 );
 export const exercises = pgTable("exercises", {
@@ -159,50 +151,34 @@ export const exercises = pgTable("exercises", {
   status: text("status").notNull(),
 });
 
-export const workoutExerciseLinks = pgTable(
-  "workoutExerciseLink",
-  {
-    exerciseId: text("exerciseId")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    workoutId: text("workoutId")
-      .notNull()
-      .references(() => workouts.id, { onDelete: "cascade" }),
-    dateEntered: timestamp("dateEntered", { mode: "date" }).notNull(),
-    time: text("time"),
-    reps: integer("reps"),
-    rest: text("rest"),
-  },
-  (workoutExerciseLinks) => [
-    {
-      compositePK: primaryKey({
-        columns: [
-          workoutExerciseLinks.exerciseId,
-          workoutExerciseLinks.workoutId,
-        ],
-      }),
-    },
-  ],
-);
+export const workoutExerciseLinks = pgTable("workoutExerciseLink", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  exerciseId: text("exerciseId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  workoutId: text("workoutId")
+    .notNull()
+    .references(() => workouts.id, { onDelete: "cascade" }),
+  dateEntered: timestamp("dateEntered", { mode: "date" }).notNull(),
+  time: text("time"),
+  reps: integer("reps"),
+  rest: text("rest"),
+  order: integer("order"),
+});
 
-export const workoutHistory = pgTable(
-  "workoutHistory",
-  {
-    userId: text("userId")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    workoutId: text("workoutId")
-      .notNull()
-      .references(() => workouts.id),
-    dateEntered: timestamp("dateEntered", { mode: "date" }).notNull(),
-    completed: timestamp("completed", { mode: "date" }).notNull(),
-    workoutName: text("workoutName"),
-  },
-  (workoutExerciseLinks) => [
-    {
-      compositePK: primaryKey({
-        columns: [workoutExerciseLinks.userId, workoutExerciseLinks.workoutId],
-      }),
-    },
-  ],
-);
+export const workoutHistory = pgTable("workoutHistory", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  workoutId: text("workoutId")
+    .notNull()
+    .references(() => workouts.id),
+  dateEntered: timestamp("dateEntered", { mode: "date" }).notNull(),
+  completed: timestamp("completed", { mode: "date" }).notNull(),
+  workoutName: text("workoutName"),
+});

@@ -19,7 +19,11 @@ export async function verfiyCredentialsEmailAction(
 
   const existingUser = await findUserByEmail(verificationToken.identifier);
 
-  if (existingUser?.id && !existingUser.emailVerified) {
+  if (
+    existingUser?.id &&
+    !existingUser.emailVerified &&
+    existingUser.email === verificationToken.identifier
+  ) {
     await db
       .update(users)
       .set({ emailVerified: new Date() })
@@ -30,7 +34,7 @@ export async function verfiyCredentialsEmailAction(
         .set({ expires: new Date() })
         .where(eq(verificationTokens.identifier, existingUser.email));
     }
-
+    console.log("returning");
     return { success: true };
   }
   return { success: false };

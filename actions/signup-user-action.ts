@@ -8,6 +8,7 @@ import { lower, users } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { USER_ROLES } from "@/lib/constants";
 import { createVerificationTokenAction } from "./create-verification-token-action";
+import { sendSignupUserEmail } from "./mail/send-signup-user-email";
 
 type Res =
   | { success: true }
@@ -49,6 +50,12 @@ export async function signupUserAction(values: unknown): Promise<Res> {
         const verificationToken = await createVerificationTokenAction(
           existingUser.email,
         );
+
+        await sendSignupUserEmail({
+          email: existingUser.email,
+          token: verificationToken?.token,
+        });
+
         return {
           success: false,
           error: "This users is not verified. Verification link sent.",
@@ -90,6 +97,12 @@ export async function signupUserAction(values: unknown): Promise<Res> {
     const verificationToken = newUser.email
       ? await createVerificationTokenAction(newUser.email)
       : null;
+    if (newUser.email && verificationToken?.token) {
+      await sendSignupUserEmail({
+        email: newUser.email,
+        token: verificationToken?.token,
+      });
+    }
     return { success: true };
   } catch (error) {
     console.error(error);

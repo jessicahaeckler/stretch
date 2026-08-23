@@ -3,4 +3,4 @@ export enum USER_ROLES {
   ADMIN = "admin",
 }
 
-export const VERIFICATION_TOKEN_EXP_MIN = 1 as const;
+export const VERIFICATION_TOKEN_EXP_MIN = 15 as const;
