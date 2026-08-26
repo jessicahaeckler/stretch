@@ -10,6 +10,5 @@ export async function signoutUserAction() {
     if (isRedirectError(error)) {
       throw error;
     }
-    console.log(error);
   }
 }

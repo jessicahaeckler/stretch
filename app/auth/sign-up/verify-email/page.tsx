@@ -15,10 +15,8 @@ export default async function Page({ searchParams }: PageProps) {
 
   //   await new Promise((res) => setTimeout(res, 2000));
   if (!verificationToken?.expires) return <TokenIsInvalidState />;
-  console.log("we have a token");
   const isExpired = new Date(verificationToken.expires) < new Date();
   if (isExpired) return <TokenIsInvalidState />;
-  console.log("token not expired");
 
   // verify the user
   const res = await verfiyCredentialsEmailAction(token);

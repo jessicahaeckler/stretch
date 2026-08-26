@@ -34,7 +34,6 @@ export async function verfiyCredentialsEmailAction(
         .set({ expires: new Date() })
         .where(eq(verificationTokens.identifier, existingUser.email));
     }
-    console.log("returning");
     return { success: true };
   }
   return { success: false };

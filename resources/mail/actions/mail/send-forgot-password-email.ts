@@ -10,8 +10,6 @@ export async function sendForgotPasswordEmail({
   email: string;
   token: string;
 }) {
-  console.log(`Sending email to ${email} with token ${token}`);
-
   await transport.sendMail({
     from: `"Stretch app Team" <${process.env.NODEMAILER_GOOGLE_SMTP_USER}>`,
     to: email,
@@ -36,6 +34,4 @@ export async function sendForgotPasswordEmail({
     </div>
     `,
   });
-
-  console.log(`Email send to ${email} with token ${token}`);
 }

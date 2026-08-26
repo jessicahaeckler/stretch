@@ -37,7 +37,6 @@ export default function ResetPasswordForm({
   const { handleSubmit, control, formState, setError } = form;
 
   const submit = async (values: ResetPasswordInput) => {
-    console.log("heeere");
     const res = await resetPasswordAction(email, token, values);
 
     if (res.success) {
@@ -59,7 +58,6 @@ export default function ResetPasswordForm({
         case 500:
         default:
           const error = res.error || "Internal Server Error";
-          console.log(error);
           setError("confirmPassword", { message: error });
       }
     }

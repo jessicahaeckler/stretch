@@ -10,15 +10,6 @@ export async function sendSignupUserEmail({
   email: string;
   token: string;
 }) {
-  console.log(`Sending email to ${email} with token ${token}`);
-
-  console.log({
-    user: process.env.NODEMAILER_GOOGLE_SMTP_USER,
-    clientId: process.env.AUTH_GOOGLE_ID,
-    hasClientSecret: !!process.env.AUTH_GOOGLE_SECRET,
-    hasRefreshToken: !!process.env.NODEMAILER_GOOGLE_REFRESH_TOKEN,
-  });
-
   await transport.sendMail({
     from: `"stretch app team" <${process.env.NODEMAILER_GOOGLE_SMTP_USER}>`,
     to: email,
@@ -42,5 +33,4 @@ export async function sendSignupUserEmail({
       <p style="text-align: center; font-size: 12px; color: #aaa;">&copy; 2026 Stretch. All rights reserved.</p>
     </div>`,
   });
-  console.log(`Email sent to ${email} with token ${token}`);
 }

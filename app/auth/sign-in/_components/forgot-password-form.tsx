@@ -43,8 +43,6 @@ export const ForgotPasswordForm = () => {
 
     const res = await forgotPasswordAction(values);
 
-    console.log(res);
-
     if (res.success) {
       setSuccess("Password reset email sent.");
     } else {
@@ -66,7 +64,6 @@ export const ForgotPasswordForm = () => {
         case 500:
         default:
           const error = res.error || "Internal Server Error";
-          console.log(error);
           setError("email", { message: error });
       }
     }

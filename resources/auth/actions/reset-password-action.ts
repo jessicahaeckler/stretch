@@ -71,7 +71,6 @@ export async function resetPasswordAction(
 
     return { success: true };
   } catch (error) {
-    console.log(error);
     return { success: false, error: "Internal Server Error", statusCode: 500 };
   }
 }

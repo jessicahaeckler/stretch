@@ -9,7 +9,6 @@ export async function createVerificationTokenAction(
 ) {
   const expires = new Date(Date.now() + VERIFICATION_TOKEN_EXP_MIN * 60 * 1000);
   const token = Math.random().toString(36).substring(2);
-  console.log({ token });
 
   const newVerificationToken = await db
     .insert(verificationTokens)

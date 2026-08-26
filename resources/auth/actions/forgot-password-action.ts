@@ -50,7 +50,6 @@ export async function forgotPasswordAction(values: unknown): Promise<Res> {
 
     return { success: true };
   } catch (error) {
-    console.log(error);
     return { success: false, error: "Internal Server Error", statusCode: 500 };
   }
 }

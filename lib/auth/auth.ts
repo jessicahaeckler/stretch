@@ -35,12 +35,10 @@ const nextAuth = NextAuth({
           const passwordsMatch = await bcrypt.compare(password, user.password);
           if (passwordsMatch) {
             const { password, ...userWithoutPassword } = user;
-            console.log("userWithoutPassword", userWithoutPassword);
             return userWithoutPassword;
           }
         }
 
-        console.log("Invalid credentials");
         return null;
       },
     }),
