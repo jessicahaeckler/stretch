@@ -1,5 +1,7 @@
-import StretchLogo from "@/app/ui/bug-logo";
-import SigninForm, { SigninFormSkeleton } from "@/app/ui/auth/signin-form";
+import StretchLogo from "@/components/ui/bug-logo";
+import SigninForm, {
+  SigninFormSkeleton,
+} from "@/components/ui/auth/signin-form";
 import { Suspense } from "react";
 
 export default function SigninPage() {

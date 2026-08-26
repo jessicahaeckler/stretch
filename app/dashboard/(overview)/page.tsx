@@ -1,10 +1,10 @@
-import LatestExercises from "@/app/ui/dashboard/latest-exercises";
-import Schedule from "@/app/ui/dashboard/schedule";
-import { inter } from "@/app/ui/fonts";
+import LatestExercises from "@/components/ui/dashboard/latest-exercises";
+import Schedule from "@/components/ui/dashboard/schedule";
+import { inter } from "@/components/ui/fonts";
 import { fetchWeekSchedule } from "@/app/lib/data";
 import { Suspense } from "react";
-import WorkoutPage from "@/app/ui/dashboard/workout-page";
-import { WorkoutSkeleton } from "@/app/ui/skeletons";
+import WorkoutPage from "@/components/ui/dashboard/workout-page";
+import { WorkoutSkeleton } from "@/components/ui/skeletons";
 
 export default async function Page() {
   // const schedules = await fetchWeekSchedule();

@@ -1,5 +1,5 @@
-import Form from "@/app/ui/workouts/create-form";
-import Breadcrumbs from "@/app/ui/workouts/breadcrumbs";
+import Form from "@/components/ui/workouts/create-form";
+import Breadcrumbs from "@/components/ui/workouts/breadcrumbs";
 import { fetchExercises } from "@/app/lib/data";
 
 export default async function Page() {

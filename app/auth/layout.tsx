@@ -1,6 +1,6 @@
-import TopNav from "@/app/ui/dashboard/topnav";
-import { Providers } from "../ui/auth/providers";
-import { auth } from "@/auth";
+import TopNav from "@/components/ui/dashboard/topnav";
+import { Providers } from "../../components/ui/auth/providers";
+import { auth } from "@/lib/auth/auth";
 import { redirect } from "next/navigation";
 
 export default async function Layout({

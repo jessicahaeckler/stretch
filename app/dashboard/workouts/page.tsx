@@ -1,9 +1,9 @@
-import Pagination from "@/app/ui/workouts/pagination";
-import Search from "@/app/ui/search";
-import Table from "@/app/ui/workouts/table";
-import { CreateWorkout } from "@/app/ui/workouts/buttons";
-import { inter } from "@/app/ui/fonts";
-import { WorkoutsTableSkeleton } from "@/app/ui/skeletons";
+import Pagination from "@/components/ui/workouts/pagination";
+import Search from "@/components/ui/search";
+import Table from "@/components/ui/workouts/table";
+import { CreateWorkout } from "@/components/ui/workouts/buttons";
+import { inter } from "@/components/ui/fonts";
+import { WorkoutsTableSkeleton } from "@/components/ui/skeletons";
 import { Suspense } from "react";
 import { fetchWorkoutsPages } from "@/app/lib/data";
 

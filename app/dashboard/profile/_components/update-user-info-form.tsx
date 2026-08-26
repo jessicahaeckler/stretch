@@ -22,11 +22,11 @@ import { Input } from "@/components/ui/input";
 import {
   type UpdateUserInfoInput,
   UpdateUserInfoSchema,
-} from "@/validators/update-user-info-validator";
+} from "@/resources/users/schemas/update-user-info-validator";
 import { type User } from "next-auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PencilIcon } from "lucide-react";
-import { updateUserInfoAction } from "@/actions/update-user-info-action";
+import { updateUserInfoAction } from "@/resources/users/actions/update-user-info-action";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

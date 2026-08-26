@@ -1,7 +1,7 @@
 "use client";
 
 import { users } from "@/drizzle/schema";
-import { toggleEmailVerifiedAction } from "@/actions/admin/toggle-email-verified-action";
+import { toggleEmailVerifiedAction } from "@/resources/users/actions/admin/toggle-email-verified-action";
 import { useTransition } from "react";
 type ToggleEmailVerifyInputProps = {
   email: (typeof users.$inferSelect)["email"];

@@ -3,30 +3,30 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import postgres from "postgres";
-import { signIn, auth } from "@/auth";
+import { signIn, auth } from "@/lib/auth/auth";
 import { AuthError } from "next-auth";
-import { WorkoutSchema } from "@/validators/workout-validators";
+import { WorkoutSchema } from "@/resources/workouts/schemas/workout-validators";
 
 const sql = postgres(process.env.STORAGE_POSTGRES_URL!, { ssl: "require" });
 
-export async function authenticate(
-  prevState: string | undefined,
-  formData: FormData,
-) {
-  try {
-    await signIn("credentials", formData);
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return "Invalid credentials.";
-        default:
-          return "Something went wrong.";
-      }
-    }
-    throw error;
-  }
-}
+// export async function authenticate(
+//   prevState: string | undefined,
+//   formData: FormData,
+// ) {
+//   try {
+//     await signIn("credentials", formData);
+//   } catch (error) {
+//     if (error instanceof AuthError) {
+//       switch (error.type) {
+//         case "CredentialsSignin":
+//           return "Invalid credentials.";
+//         default:
+//           return "Something went wrong.";
+//       }
+//     }
+//     throw error;
+//   }
+// }
 
 export type State = {
   errors?: {

@@ -1,5 +1,5 @@
-import SignoutButton from "@/app/ui/auth/signout-button";
-import { auth } from "@/auth";
+import SignoutButton from "@/components/ui/auth/signout-button";
+import { auth } from "@/lib/auth/auth";
 import { Button } from "@/components/ui/button";
 import { type User } from "next-auth";
 import Link from "next/link";
@@ -15,7 +15,7 @@ export default async function ProfilePage() {
   const isAdmin = session?.user?.role === USER_ROLES.ADMIN;
 
   return (
-    <div className="container">
+    <div className="container m-auto">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Profile</h1>
         {/* make this a sidebar later */}

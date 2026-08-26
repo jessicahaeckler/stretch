@@ -1,6 +1,6 @@
 "use client";
 
-import { forgotPasswordAction } from "@/actions/forgot-password-action";
+import { forgotPasswordAction } from "@/resources/auth/actions/forgot-password-action";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import {
   ForgotPasswordInput,
   ForgotPasswordSchema,
-} from "@/validators/forgot-password-validator";
+} from "@/resources/auth/schemas/forgot-password-validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";

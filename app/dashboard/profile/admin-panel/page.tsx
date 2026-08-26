@@ -1,6 +1,6 @@
-import { FindAllUsers } from "@/resources/user-queries";
+import { FindAllUsers } from "@/resources/users/queries/user-queries";
 import { USER_ROLES } from "@/lib/constants";
-import { auth } from "@/auth";
+import { auth } from "@/lib/auth/auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ArrowLeftSquareIcon } from "lucide-react";

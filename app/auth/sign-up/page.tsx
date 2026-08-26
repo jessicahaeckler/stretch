@@ -1,5 +1,7 @@
-import StretchLogo from "@/app/ui/bug-logo";
-import SignupForm, { SignupFormSkeleton } from "@/app/ui/auth/signup-form";
+import StretchLogo from "@/components/ui/bug-logo";
+import SignupForm, {
+  SignupFormSkeleton,
+} from "@/components/ui/auth/signup-form";
 import { Suspense } from "react";
 
 export default function SignupPage() {

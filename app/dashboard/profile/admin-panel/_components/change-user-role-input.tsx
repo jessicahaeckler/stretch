@@ -1,6 +1,6 @@
 "use client";
 
-import { changeUserRoleAction } from "@/actions/admin/change-user-role-action";
+import { changeUserRoleAction } from "@/resources/users/actions/admin/change-user-role-action";
 import { users } from "@/drizzle/schema";
 import { useTransition } from "react";
 

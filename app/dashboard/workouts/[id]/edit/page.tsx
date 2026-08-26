@@ -1,5 +1,5 @@
-import Form from "@/app/ui/workouts/edit-form";
-import Breadcrumbs from "@/app/ui/workouts/breadcrumbs";
+import Form from "@/components/ui/workouts/edit-form";
+import Breadcrumbs from "@/components/ui/workouts/breadcrumbs";
 import { notFound } from "next/navigation";
 import {
   fetchExercises,

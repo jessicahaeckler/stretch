@@ -1,6 +1,6 @@
-import { verfiyCredentialsEmailAction } from "@/actions/verify-credentials-email-action";
+import { verfiyCredentialsEmailAction } from "@/resources/auth/actions/verify-credentials-email-action";
 import { Button } from "@/components/ui/button";
-import { findVerificationTokenByToken } from "@/resources/verification-token-queries";
+import { findVerificationTokenByToken } from "@/resources/auth/queries/verification-token-queries";
 import Link from "next/link";
 
 type PageProps = {

@@ -1,6 +1,6 @@
 // import SideNav from "@/app/ui/dashboard/sidenav";
-import TopNav from "@/app/ui/dashboard/topnav";
-import { Providers } from "../ui/auth/providers";
+import TopNav from "@/components/ui/dashboard/topnav";
+import { Providers } from "../../components/ui/auth/providers";
 import { SessionProvider } from "next-auth/react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
