@@ -6,7 +6,7 @@ export const WorkoutSchema = z.object({
   exercises: z.array(
     z.object({
       id: z.nullable(z.string().optional()),
-      exerciseid: z.string(),
+      exerciseId: z.string(),
       reps: z.nullable(z.number().optional()),
       time: z.nullable(z.string().optional()),
       rest: z.nullable(z.string().optional()),
@@ -19,3 +19,22 @@ export const WorkoutSchema = z.object({
   date: z.string(),
   deletedExercises: z.array(z.string()).optional(),
 });
+
+export type WorkoutForm = {
+  id: string;
+  userId: string;
+  name: string;
+  days: (
+    | "sunday"
+    | "monday"
+    | "tuesday"
+    | "wednesday"
+    | "thursday"
+    | "friday"
+    | "saturday"
+  )[];
+  duration: string | null;
+  tags: string | null;
+  image: string | null;
+  status: "private" | "public";
+};

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { UpdateWorkout, DeleteWorkout } from "@/components/ui/workouts/buttons";
-import { fetchFilteredWorkouts } from "@/app/lib/data";
+import { fetchFilteredWorkouts } from "@/resources/workouts/queries/workout-queries";
 
 export default async function WorkoutsTable({
   query,
@@ -33,7 +33,7 @@ export default async function WorkoutsTable({
                       />
                       <p>{workout.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{workout.username}</p>
+                    <p className="text-sm text-gray-500">{workout.name}</p>
                   </div>
                   {/* <WorkoutStatus status={workout.status} /> */}
                 </div>
@@ -92,7 +92,7 @@ export default async function WorkoutsTable({
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {workout.username}
+                    {workout.name}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">10:00</td>
                   <td className="whitespace-nowrap px-3 py-3">M/W/F</td>

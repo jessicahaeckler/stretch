@@ -1,6 +1,9 @@
 "use client";
 
-import { WorkoutExerciseLink } from "@/app/lib/definitions";
+import {
+  Exercise,
+  WorkoutExerciseLink,
+} from "@/resources/exercises/schemas/exercise-validators";
 import Link from "next/link";
 import { LockClosedIcon, LockOpenIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
@@ -9,11 +12,7 @@ import { ScheduleDays } from "@/components/ui/workouts/exercises/day-picker";
 import { ExercisePicker } from "@/components/ui/workouts/exercises/exercise-list";
 import { useActionState } from "react";
 
-export default function Form({
-  exercises,
-}: {
-  exercises: WorkoutExerciseLink[];
-}) {
+export default function Form({ exercises }: { exercises: Exercise[] }) {
   const initialState: State = { message: null, errors: {} };
   const [state, formAction] = useActionState(createWorkout, initialState);
   return (

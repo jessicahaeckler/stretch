@@ -15,6 +15,13 @@
       "when": 1787443532927,
       "tag": "0001_groovy_jamie_braddock",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1787781369349,
+      "tag": "0002_supreme_goblin_queen",
+      "breakpoints": true
     }
   ]
 }

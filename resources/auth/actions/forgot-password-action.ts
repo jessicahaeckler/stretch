@@ -4,7 +4,7 @@ import { findUserByEmail } from "@/resources/users/queries/user-queries";
 import { ForgotPasswordSchema } from "@/resources/auth/schemas/forgot-password-validator";
 import z from "zod";
 import { createVerificationTokenAction } from "./create-verification-token-action";
-import { sendForgotPasswordEmail } from "../../mail/actions/mail/send-forgot-password-email";
+import { sendForgotPasswordEmail } from "../../mail/actions/send-forgot-password-email";
 
 type Res =
   | { success: true }

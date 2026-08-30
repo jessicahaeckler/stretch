@@ -18,6 +18,16 @@ export function lower(email: AnyPgColumn): SQL {
 }
 
 export const roleEnum = pgEnum("role", ["standard", "admin"]);
+export const statusEnum = pgEnum("status", ["public", "private"]);
+export const daysEnum = pgEnum("days", [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+]);
 
 export const users = pgTable(
   "user",
@@ -115,40 +125,27 @@ export const workouts = pgTable("workout", {
   name: text("name").notNull(),
   description: text("description"),
   image: text("image"),
-  duration: text("duration").notNull(),
-  days: integer("days"),
-  status: text("status"),
-  tags: text("status"),
+  duration: text("duration"),
+  status: statusEnum("status").notNull().default("private"),
+  tags: text("tags"),
+  schedule_days: daysEnum("schedule_days").array().notNull(),
+  parentWorkoutId: text("parentWorkoutId").references(
+    (): AnyPgColumn => workouts.id,
+    { onDelete: "set null" },
+  ),
 });
 
-export const savedWorkouts = pgTable(
-  "savedWorkout",
-  {
-    userId: text("userId")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    workoutId: text("workoutId")
-      .notNull()
-      .references(() => workouts.id, { onDelete: "cascade" }),
-    dateEntered: timestamp("dateEntered", { mode: "date" }).notNull(),
-    schedule_days: text("schedule_days"),
-  },
-  (savedWorkout) => [
-    primaryKey({
-      columns: [savedWorkout.userId, savedWorkout.workoutId],
-    }),
-  ],
-);
 export const exercises = pgTable("exercises", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
   dateEntered: timestamp("dateEntered", { mode: "date" }).notNull(),
   name: text("name").notNull(),
   description: text("description"),
   image: text("image"),
-  tags: text("status"),
-  status: text("status").notNull(),
 });
 
 export const workoutExerciseLinks = pgTable("workoutExerciseLink", {
@@ -175,9 +172,9 @@ export const workoutHistory = pgTable("workoutHistory", {
   userId: text("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  workoutId: text("workoutId")
-    .notNull()
-    .references(() => workouts.id),
+  workoutId: text("workoutId").references(() => workouts.id, {
+    onDelete: "set null",
+  }),
   dateEntered: timestamp("dateEntered", { mode: "date" }).notNull(),
   completed: timestamp("completed", { mode: "date" }).notNull(),
   workoutName: text("workoutName"),

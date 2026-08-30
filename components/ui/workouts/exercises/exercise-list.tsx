@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
 import {
+  Exercise,
   WorkoutExerciseLink,
   WorkoutExerciseLinkForm,
-} from "@/app/lib/definitions";
+} from "@/resources/exercises/schemas/exercise-validators";
 import { Button } from "@/components/ui/button";
 import { ClockIcon, HashtagIcon, MoonIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
@@ -12,7 +13,7 @@ export function ExercisePicker({
   exercises,
   initialList,
 }: {
-  exercises: WorkoutExerciseLink[];
+  exercises: Exercise[];
   initialList?: WorkoutExerciseLinkForm[];
 }) {
   const [selected, setSelected] = useState<WorkoutExerciseLinkForm[]>(
@@ -23,7 +24,7 @@ export function ExercisePicker({
   const [deleted, setDeleted] = useState<string[]>([]);
 
   function handleAdd() {
-    if (!current.exerciseid) return; // guard against empty add
+    if (!current.exerciseId) return; // guard against empty add
     setSelected((prev) => [...prev, current as WorkoutExerciseLinkForm]);
     setCurrent({});
     setTrackingKey((k) => k + 1);
@@ -48,9 +49,9 @@ export function ExercisePicker({
 
       <select
         className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-2 text-sm placeholder:text-gray-500 mb-4"
-        value={current.exerciseid ?? ""}
+        value={current.exerciseId ?? ""}
         onChange={(e) =>
-          setCurrent((c) => ({ ...c, exerciseid: e.target.value }))
+          setCurrent((c) => ({ ...c, exerciseId: e.target.value }))
         }
       >
         <option value="" disabled>
@@ -69,7 +70,7 @@ export function ExercisePicker({
       />
 
       <div className="w-full flex justify-center">
-        <Button type="button" color="green" onClick={handleAdd}>
+        <Button variant="default" size="lg" onClick={handleAdd}>
           + Add Exercise
         </Button>
       </div>
@@ -78,7 +79,7 @@ export function ExercisePicker({
         {selected.map((ex, i) => (
           <li className="py-2 flex items-center justify-between" key={i}>
             <div className="grow m-auto flex gap-2">
-              {exercises.find((e) => e.id === ex.exerciseid)?.name}
+              {exercises.find((e) => e.id === ex.exerciseId)?.name}
               <label
                 className={clsx(
                   "ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600",
@@ -112,7 +113,7 @@ export function ExercisePicker({
             </div>
             <Button
               className="m-[2px]"
-              color="red"
+              variant="destructive"
               type="button"
               onClick={() => handleRemove(i)}
             >

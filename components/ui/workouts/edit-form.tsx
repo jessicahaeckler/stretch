@@ -1,10 +1,11 @@
 "use client";
 
+import { WorkoutForm } from "@/resources/workouts/schemas/workout-validators";
 import {
   WorkoutExerciseLink,
+  Exercise,
   WorkoutExerciseLinkForm,
-  WorkoutForm,
-} from "@/app/lib/definitions";
+} from "@/resources/exercises/schemas/exercise-validators";
 import { CheckIcon, ClockIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,7 @@ export default function EditWorkoutForm({
   links,
 }: {
   workout: WorkoutForm;
-  exercises: WorkoutExerciseLink[];
+  exercises: Exercise[];
   links: WorkoutExerciseLinkForm[];
 }) {
   const initialState: State = { message: null, errors: {} };
@@ -60,7 +61,7 @@ export default function EditWorkoutForm({
           <legend className="mb-2 block text-sm font-medium">
             Workout schedule
           </legend>
-          <ScheduleDays selectedDays={workout.schedule_days}></ScheduleDays>
+          <ScheduleDays selectedDays={workout.days}></ScheduleDays>
         </fieldset>
 
         {/* TODO: fix this */}

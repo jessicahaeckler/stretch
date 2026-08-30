@@ -2,13 +2,17 @@ import postgres from "postgres";
 import {
   User,
   WorkoutUser,
-  Exercise,
-  WorkoutExerciseLink,
   ScheduleWorkout,
   FullWorkoutUser,
-  WorkoutForm,
-  WorkoutExerciseLinkForm,
 } from "./definitions";
+
+import { WorkoutForm } from "@/resources/workouts/schemas/workout-validators";
+
+import {
+  WorkoutExerciseLinkForm,
+  WorkoutExerciseLink,
+  Exercise,
+} from "@/resources/exercises/schemas/exercise-validators";
 
 const sql = postgres(process.env.STORAGE_POSTGRES_URL!, { ssl: "require" });
 
@@ -99,113 +103,6 @@ export async function fetchWeekSchedule() {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error(`Failed to fetch the latest schedules. ${error}`);
-  }
-}
-
-const ITEMS_PER_PAGE = 6;
-export async function fetchFilteredWorkouts(
-  query: string,
-  currentPage: number,
-) {
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
-  try {
-    const workouts = await sql<FullWorkoutUser[]>`
-      SELECT
-        workouts.id,
-        workouts.user_id,
-        workouts.name,
-        workouts.schedule_days,
-        workouts.duration,
-        users.username
-      FROM workouts
-      JOIN users ON workouts.user_id = users.id
-      WHERE
-        users.username ILIKE ${`%${query}%`} OR
-        workouts.name ILIKE ${`%${query}%`} 
-      ORDER BY workouts.name DESC
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-    `;
-
-    return workouts;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch workouts.");
-  }
-}
-
-export async function fetchWorkoutsPages(query: string) {
-  try {
-    const data = await sql`SELECT COUNT(*)
-    FROM workouts
-    JOIN users ON workouts.user_id = users.id
-    WHERE
-      users.username ILIKE ${`%${query}%`} OR
-      workouts.name ILIKE ${`%${query}%`} 
-    `;
-
-    const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
-    return totalPages;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch total number of workouts.");
-  }
-}
-
-export async function fetchWorkoutById(id: string) {
-  try {
-    const workout = await sql<WorkoutForm[]>`
-      SELECT
-        workouts.id,
-        workouts.user_id,
-        workouts.name,
-        workouts.schedule_days,
-        workouts.status
-      FROM workouts
-      WHERE workouts.id = ${id};
-    `;
-
-    return workout[0];
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch workout.");
-  }
-}
-
-export async function fetchExerciseLinksById(id: string) {
-  try {
-    const links = await sql<WorkoutExerciseLinkForm[]>`
-      SELECT
-        workout_exercise_links.id,
-        workout_exercise_links.time,
-        workout_exercise_links.reps,
-        workout_exercise_links.rest,
-        exercises.id as exerciseid
-      FROM workout_exercise_links JOIN exercises ON exercises.id = workout_exercise_links.exercise_id
-      WHERE workout_exercise_links.workout_id = ${id};
-    `;
-
-    return links;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch links.");
-  }
-}
-
-export async function fetchExercises() {
-  try {
-    const exercises = await sql<WorkoutExerciseLink[]>`
-      SELECT
-        id,
-        name
-      FROM exercises
-      ORDER BY name ASC
-    `;
-
-    return exercises;
-  } catch (err) {
-    console.error("Database Error:", err);
-    throw new Error("Failed to fetch all exercises.");
   }
 }
 

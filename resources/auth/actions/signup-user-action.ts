@@ -8,7 +8,7 @@ import { lower, users } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { USER_ROLES } from "@/lib/constants";
 import { createVerificationTokenAction } from "./create-verification-token-action";
-import { sendSignupUserEmail } from "../../mail/actions/mail/send-signup-user-email";
+import { sendSignupUserEmail } from "../../mail/actions/send-signup-user-email";
 
 type Res =
   | { success: true }
