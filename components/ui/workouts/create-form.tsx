@@ -1,134 +1,221 @@
 "use client";
 
-import {
-  Exercise,
-  WorkoutExerciseLink,
-} from "@/resources/exercises/schemas/exercise-validators";
-import Link from "next/link";
-import { LockClosedIcon, LockOpenIcon } from "@heroicons/react/24/outline";
+import { Card, CardContent } from "@/components/ui/card";
+import { createWorkout } from "@/resources/workouts/actions/create-workout";
 import { Button } from "@/components/ui/button";
-import { createWorkout, State } from "@/app/lib/actions";
-import { ScheduleDays } from "@/components/ui/workouts/exercises/day-picker";
-import { ExercisePicker } from "@/components/ui/workouts/exercises/exercise-list";
-import { useActionState } from "react";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Controller, useForm } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  CreateWorkoutInput,
+  CreateWorkoutSchema,
+} from "@/resources/workouts/schemas/workout-validators";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useRouter } from "next/navigation";
 
-export default function Form({ exercises }: { exercises: Exercise[] }) {
-  const initialState: State = { message: null, errors: {} };
-  const [state, formAction] = useActionState(createWorkout, initialState);
+export default function createWorkoutForm() {
+  const router = useRouter();
+  const form = useForm<CreateWorkoutInput>({
+    resolver: zodResolver(CreateWorkoutSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      status: "private",
+      schedule_days: [],
+    },
+  });
+  const { handleSubmit, control, formState, setError } = form;
+  const submit = async (values: CreateWorkoutInput) => {
+    console.log("pressed");
+    const res = await createWorkout(values);
+    console.log(res);
+
+    if (!res.success) {
+      switch (res.statusCode) {
+        case 400:
+          const nestedErrors = res.error.fieldErrors;
+
+          for (const key of Object.keys(nestedErrors) as Array<
+            keyof typeof nestedErrors
+          >) {
+            setError(key, {
+              message: nestedErrors[key]?.[0],
+            });
+          }
+          break;
+        case 401:
+        case 500:
+        default:
+          const error = res.error || "Internal Server Error";
+          setError("schedule_days", { message: error });
+      }
+    }
+  };
+
+  // const initialState: State = { message: null, errors: {} };
+  // const [state, formAction] = useActionState(createWorkout, initialState);
   return (
-    <form action={formAction}>
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Workout Name */}
-        <div className="mb-4">
-          <label htmlFor="workout" className="mb-2 block text-sm font-medium">
-            Workout name
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative flex gap-2">
-              <div className="text-red-700 m-auto text-lg">*</div>
-              <input
-                id="workout"
-                name="workout"
-                type="text"
-                placeholder="Enter workout"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-2 text-sm placeholder:text-gray-500 bg-white"
-                aria-describedby="workout-error"
-              />
-            </div>
-          </div>
-        </div>
-        <div id="workout-error" aria-live="polite" aria-atomic="true">
-          {state.errors?.name &&
-            state.errors.name.map((error: string) => (
-              <p className="mt-2 text-sm text-red-500" key={error}>
-                {error}
-              </p>
-            ))}
-        </div>
+    <Card className="bg-gray-50 pt-8">
+      <form onSubmit={handleSubmit(submit)} className="space-y-6">
+        <CardContent>
+          <FieldGroup>
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-rhf-demo-title">
+                    Workout Name
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="form-rhf-demo-title"
+                    type="name"
+                    placeholder="Workout name"
+                    aria-invalid={fieldState.invalid}
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="description"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="form-rhf-demo-title">
+                    Workout Description
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id="form-rhf-demo-title"
+                    type="description"
+                    placeholder="Workout description"
+                    aria-invalid={fieldState.invalid}
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
 
-        {/* Workout Exercise */}
-        <div className="mb-4">
-          <label htmlFor="exercise" className="mb-2 block text-sm font-medium">
-            Choose exercise
-          </label>
-          <div className="mb-4 rounded-md border border-gray-200 bg-white px-[14px] py-3 overflow-auto w-full">
-            <ExercisePicker exercises={exercises}></ExercisePicker>
-          </div>
-        </div>
+            <Controller
+              name="status"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Status</FieldLabel>
+                  <RadioGroup
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    className="w-fit"
+                  >
+                    <div className="flex items-center gap-3">
+                      <RadioGroupItem value="private" id="private" />
+                      <Label htmlFor="private">Private</Label>
+                    </div>
 
-        {/* Workout Schedule */}
-        <fieldset className="min-w-0">
-          <legend className="mb-2 block text-sm font-medium">
-            Workout schedule
-          </legend>
-          <ScheduleDays></ScheduleDays>
-        </fieldset>
+                    <div className="flex items-center gap-3">
+                      <RadioGroupItem value="public" id="public" />
+                      <Label htmlFor="public">Public</Label>
+                    </div>
+                  </RadioGroup>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
 
-        {/* Workout Status */}
-        <fieldset>
-          <legend className="mb-2 block text-sm font-medium">
-            Set the workout status
-          </legend>
-          <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
-            <div className="flex gap-4">
-              <div className="flex items-center">
-                <input
-                  id="private"
-                  name="status"
-                  type="radio"
-                  value="private"
-                  defaultChecked={true}
-                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-1"
-                  aria-describedby="status-error"
-                />
-                <label
-                  htmlFor="private"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
+            <Controller
+              name="schedule_days"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <ToggleGroup
+                    variant="outline"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    multiple
+                  >
+                    <ToggleGroupItem value="sunday" aria-label="Toggle sunday">
+                      Sunday
+                    </ToggleGroupItem>
+                    <ToggleGroupItem value="monday" aria-label="Toggle monday">
+                      Monday
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                      value="tuesday"
+                      aria-label="Toggle tuesday"
+                    >
+                      Tuesday
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                      value="wednesday"
+                      aria-label="Toggle wednesday"
+                    >
+                      Wednesday
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                      value="thursday"
+                      aria-label="Toggle thursday"
+                    >
+                      Thursday
+                    </ToggleGroupItem>
+                    <ToggleGroupItem value="friday" aria-label="Toggle friday">
+                      Friday
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                      value="saturday"
+                      aria-label="Toggle saturday"
+                    >
+                      Saturday
+                    </ToggleGroupItem>
+                  </ToggleGroup>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <div className="flex gap-2">
+              <Field orientation="horizontal">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  type="button"
+                  disabled={formState.isSubmitting}
+                  onClick={() => router.push("/dashboard/workouts")}
                 >
-                  Private <LockClosedIcon className="h-4 w-4" />
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  id="public"
-                  name="status"
-                  type="radio"
-                  value="public"
-                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-1"
-                  aria-describedby="status-error"
-                />
-                <label
-                  htmlFor="public"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
+                  Cancel
+                </Button>
+              </Field>
+              <Field orientation="horizontal">
+                <Button
+                  className="w-full"
+                  type="submit"
+                  disabled={formState.isSubmitting}
                 >
-                  Public <LockOpenIcon className="h-4 w-4" />
-                </label>
-              </div>
+                  Create Workout
+                </Button>
+              </Field>
             </div>
-          </div>
-        </fieldset>
-        <div id="status-error" aria-live="polite" aria-atomic="true">
-          {state.errors?.status &&
-            state.errors.status.map((error: string) => (
-              <p className="mt-2 text-sm text-red-500" key={error}>
-                {error}
-              </p>
-            ))}
-
-          <p className="mt-2 text-sm text-red-500" key={state.message}>
-            {state.message}
-          </p>
-        </div>
-      </div>
-      <div className="mt-6 flex justify-end gap-4">
-        <Link
-          href="/dashboard/workouts"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-        >
-          Cancel
-        </Link>
-        <Button type="submit">Create Workout</Button>
-      </div>
-    </form>
+          </FieldGroup>
+        </CardContent>
+      </form>
+    </Card>
   );
 }

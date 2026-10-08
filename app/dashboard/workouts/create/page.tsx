@@ -1,10 +1,10 @@
 import Form from "@/components/ui/workouts/create-form";
 import Breadcrumbs from "@/components/ui/workouts/breadcrumbs";
-import { fetchUserExercises } from "@/resources/exercises/queries/exercies-queries";
+// import { fetchUserExercises } from "@/resources/exercises/queries/exercies-queries";
 
 export default async function Page() {
   // TODO: add pagination
-  const exercises = await fetchUserExercises(1);
+  // const exercises = await fetchUserExercises(1);
 
   return (
     <main>
@@ -18,7 +18,7 @@ export default async function Page() {
           },
         ]}
       />
-      <Form exercises={exercises} />
+      <Form />
     </main>
   );
 }
