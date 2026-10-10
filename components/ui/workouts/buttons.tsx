@@ -1,6 +1,35 @@
+"use client";
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { deleteWorkout } from "@/app/lib/actions";
+import { deleteWorkout } from "@/resources/workouts/actions/delete-workout";
 import Link from "next/link";
+import { Controller, useForm } from "react-hook-form";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+  type CreateExerciseLinkInput,
+  CreateExerciseLinkSchema,
+} from "@/resources/exercises/schemas/exercise-validators";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createExercise } from "@/resources/exercises/actions/create-exercise";
+import { useState } from "react";
 
 export function CreateWorkout() {
   return (
@@ -13,7 +42,6 @@ export function CreateWorkout() {
     </Link>
   );
 }
-
 export function UpdateWorkout({ id }: { id: string }) {
   return (
     <Link
@@ -25,14 +53,216 @@ export function UpdateWorkout({ id }: { id: string }) {
   );
 }
 
+export function AddExercise({ id }: { id: string }) {
+  const [success, setSuccess] = useState("");
+  const form = useForm<CreateExerciseLinkInput>({
+    resolver: zodResolver(CreateExerciseLinkSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      time: "0",
+      reps: 0,
+      rest: "0",
+    },
+  });
+  const { handleSubmit, control, formState, setError } = form;
+
+  const submit = async (values: CreateExerciseLinkInput) => {
+    const res = await createExercise(id, values);
+    if (res.success) {
+      setSuccess("Exercise added successfully.");
+    } else {
+      switch (res.statusCode) {
+        case 400:
+          const nestedErrors = res.error.fieldErrors;
+
+          for (const key of Object.keys(nestedErrors) as Array<
+            keyof typeof nestedErrors
+          >) {
+            setError(key, {
+              message: nestedErrors[key]?.[0],
+            });
+          }
+          break;
+        case 401:
+        case 500:
+        default:
+          const error = res.error || "Internal Server Error";
+          setError("rest", { message: error });
+      }
+    }
+  };
+
+  return (
+    <Dialog
+      onOpenChange={(open) => {
+        if (!open) {
+          setSuccess("");
+        }
+      }}
+    >
+      <DialogTrigger className="p-2 pl-3 pr-3 font-bold bg-primary text-primary-foreground hover:bg-primary/80 transition-colors rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
+        <PlusIcon />
+      </DialogTrigger>
+
+      <DialogContent>
+        <form
+          id="edit-user"
+          onSubmit={handleSubmit(submit, (errors) => {
+            console.log("Form validation failed:", errors);
+          })}
+          className="space-y-4"
+        >
+          <DialogHeader>
+            <DialogTitle>Create Exercise</DialogTitle>
+            <DialogDescription>
+              Enter your exercise info below
+            </DialogDescription>
+            <Card className="bg-gray-50 pt-8">
+              <CardContent>
+                <FieldGroup>
+                  <Controller
+                    name="name"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="name">Name</FieldLabel>
+                        <Input {...field} id="name" type="text" />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                        {success && (
+                          <p className="text-sm font-medium text-green-600">
+                            {success}
+                          </p>
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="description"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="description">
+                          Description
+                        </FieldLabel>
+                        <Textarea {...field} id="description" />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                        {success && (
+                          <p className="text-sm font-medium text-green-600">
+                            {success}
+                          </p>
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="time"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="time">Time</FieldLabel>
+                        <Input {...field} id="time" type="number" />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                        {success && (
+                          <p className="text-sm font-medium text-green-600">
+                            {success}
+                          </p>
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="reps"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="reps">Reps</FieldLabel>
+                        <Input
+                          {...field}
+                          id="reps"
+                          type="number"
+                          onChange={(e) =>
+                            field.onChange(
+                              e.target.value === ""
+                                ? undefined
+                                : Number(e.target.value),
+                            )
+                          }
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                        {success && (
+                          <p className="text-sm font-medium text-green-600">
+                            {success}
+                          </p>
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="rest"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor="rest">Rest</FieldLabel>
+                        <Input {...field} id="rest" type="number" />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                        {success && (
+                          <p className="text-sm font-medium text-green-600">
+                            {success}
+                          </p>
+                        )}
+                      </Field>
+                    )}
+                  />
+                </FieldGroup>
+              </CardContent>
+            </Card>
+          </DialogHeader>
+          <DialogFooter className="flex">
+            <DialogClose
+              className="grow"
+              render={<Button type="button">Close</Button>}
+            />
+            <Button
+              className="grow"
+              type="submit"
+              disabled={formState.isSubmitting}
+            >
+              {formState.isSubmitting == true ? (
+                <div>Creating...</div>
+              ) : (
+                <div>Create</div>
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// TODO:: add confirmation popup, add spinned and success message
 export function DeleteWorkout({ id }: { id: string }) {
   const deleteWorkoutWithId = deleteWorkout.bind(null, id);
   return (
     <form action={deleteWorkoutWithId}>
-      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
+      <Button
+        type="submit"
+        className="rounded-md border p-2 pl-3 pr-3 bg-red-700 hover:bg-red-600"
+      >
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
-      </button>
+      </Button>
     </form>
   );
 }

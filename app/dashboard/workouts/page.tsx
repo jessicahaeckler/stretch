@@ -10,6 +10,9 @@ import { fetchWorkoutsPages } from "@/resources/workouts/queries/workout-queries
 // this page will display workouts you have created or saved from other users.
 // editing another users workout creates a new copy.
 // deleting another users workout removes the workout from your "saved" workouts.
+// TODO:: fill in actual duration, schedule, etc on list
+// TODO:: Fix edit page (should be able to edit workout info and edit/delete/add exercises - maybe move the create exercise button here)
+// TODO:: clicking an exercist should start the workout
 
 export default async function Page(props: {
   searchParams?: Promise<{

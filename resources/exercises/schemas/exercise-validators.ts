@@ -1,3 +1,27 @@
+import z from "zod";
+
+export const CreateExerciseLinkSchema = z.object({
+  name: z.string({ error: "Name is required" }).nonempty("Name is required"),
+  description: z.string({ error: "Description must be a string" }),
+  time: z.string({ error: "time should be text" }),
+  reps: z.number({ error: "reps should be a number" }),
+  rest: z.string({ error: "rest should be text" }),
+});
+
+export type CreateExerciseLinkInput = z.infer<typeof CreateExerciseLinkSchema>;
+
+export const ExerciseLinkSchema = z.object({
+  id: z.string(),
+  name: z.string().trim().min(1, "Please enter a exercise name."),
+  description: z.string(),
+  dateEntered: z.string(),
+  time: z.string(),
+  reps: z.number(),
+  rest: z.string(),
+  order: z.number(),
+  workoutId: z.string(),
+});
+
 export type Exercise = {
   id: string;
   name: string;

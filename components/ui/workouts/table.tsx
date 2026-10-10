@@ -1,5 +1,9 @@
 import Image from "next/image";
-import { UpdateWorkout, DeleteWorkout } from "@/components/ui/workouts/buttons";
+import {
+  AddExercise,
+  UpdateWorkout,
+  DeleteWorkout,
+} from "@/components/ui/workouts/buttons";
 import { fetchFilteredWorkouts } from "@/resources/workouts/queries/workout-queries";
 
 export default async function WorkoutsTable({
@@ -43,6 +47,7 @@ export default async function WorkoutsTable({
                     <p>M/W/F</p>
                   </div>
                   <div className="flex justify-end gap-2">
+                    <AddExercise id={workout.id} />
                     <UpdateWorkout id={workout.id} />
                     <DeleteWorkout id={workout.id} />
                   </div>
@@ -102,6 +107,7 @@ export default async function WorkoutsTable({
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
+                      <AddExercise id={workout.id} />
                       <UpdateWorkout id={workout.id} />
                       <DeleteWorkout id={workout.id} />
                     </div>

@@ -38,7 +38,9 @@ export default function createWorkoutForm() {
     const res = await createWorkout(values);
     console.log(res);
 
-    if (!res.success) {
+    if (res.success) {
+      router.push("/dashboard/workouts");
+    } else {
       switch (res.statusCode) {
         case 400:
           const nestedErrors = res.error.fieldErrors;

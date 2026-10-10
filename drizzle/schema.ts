@@ -154,7 +154,7 @@ export const workoutExerciseLinks = pgTable("workoutExerciseLink", {
     .$defaultFn(() => crypto.randomUUID()),
   exerciseId: text("exerciseId")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => exercises.id, { onDelete: "cascade" }),
   workoutId: text("workoutId")
     .notNull()
     .references(() => workouts.id, { onDelete: "cascade" }),
