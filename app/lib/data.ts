@@ -1,57 +1,9 @@
 import postgres from "postgres";
-import {
-  User,
-  WorkoutUser,
-  ScheduleWorkout,
-  FullWorkoutUser,
-} from "./definitions";
+import { WorkoutUser, ScheduleWorkout } from "./definitions";
 
-import { WorkoutForm } from "@/resources/workouts/schemas/workout-validators";
-
-import {
-  WorkoutExerciseLinkForm,
-  WorkoutExerciseLink,
-  Exercise,
-} from "@/resources/exercises/schemas/exercise-validators";
+import { Exercise } from "@/resources/exercises/schemas/exercise-validators";
 
 const sql = postgres(process.env.STORAGE_POSTGRES_URL!, { ssl: "require" });
-
-export async function getAuthUser(email: string) {
-  try {
-    const user = await sql<
-      User[]
-    >`SELECT * FROM users WHERE email=${email} AND password IS NOT NULL`;
-    return user[0];
-  } catch (error) {
-    console.error("Failed to fetch user:", error);
-    throw new Error("Failed to fetch user.");
-  }
-}
-
-export async function getUser(email: string) {
-  try {
-    const user = await sql<User[]>`SELECT * FROM users WHERE email=${email}`;
-    return user[0];
-  } catch (error) {
-    console.error("Failed to fetch user:", error);
-    throw new Error("Failed to fetch user.");
-  }
-}
-
-export async function createUser(email: string, name: string) {
-  try {
-    const user = await sql<User[]>`
-      INSERT INTO users (email, username)
-      VALUES (${email}, ${name})
-      RETURNING *
-    `;
-
-    return user[0];
-  } catch (error) {
-    console.error("Failed to fetch user:", error);
-    throw new Error("Failed to fetch user.");
-  }
-}
 
 export async function fetchLatestWorkouts() {
   try {

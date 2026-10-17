@@ -58,7 +58,8 @@ export type WorkoutForm = {
   id: string;
   userId: string;
   name: string;
-  days: (
+  description: string | null;
+  schedule_days: (
     | "sunday"
     | "monday"
     | "tuesday"

@@ -1,19 +1,14 @@
 import Form from "@/components/ui/workouts/edit-form";
 import Breadcrumbs from "@/components/ui/workouts/breadcrumbs";
 import { notFound } from "next/navigation";
-import {
-  fetchUserExercises,
-  fetchExerciseLinksById,
-} from "@/resources/exercises/queries/exercies-queries";
+import { fetchExerciseLinksById } from "@/resources/exercises/queries/exercies-queries";
 import { fetchWorkoutById } from "@/resources/workouts/queries/workout-queries";
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const id = params.id;
-  const [workout, exercises, links] = await Promise.all([
+  const [workout, links] = await Promise.all([
     fetchWorkoutById(id),
-    //TODO: add pagination
-    fetchUserExercises(1),
     fetchExerciseLinksById(id),
   ]);
   if (!workout) {
@@ -31,7 +26,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           },
         ]}
       />
-      <Form workout={workout} exercises={exercises} links={links} />
+      <Form workout={workout} links={links} />
     </main>
   );
 }

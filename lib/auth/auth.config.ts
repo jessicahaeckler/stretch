@@ -19,12 +19,6 @@ export const authConfig = {
     async createUser(data: AdapterUser) {
       const { id, ...insertData } = data;
       const hasDefaultId = getTableColumns(schema.users)["id"]["hasDefault"];
-      // Handling admin w/ email address
-      // const isAdmin =
-      //   process.env.ADMIN_EMAIL_ADDRESS?.toLowerCase() ===
-      //   insertData.email.toLowerCase();
-
-      // if (isAdmin) insertData.role = USER_ROLES.ADMIN;
 
       return db
         .insert(schema.users)
@@ -46,15 +40,6 @@ export const authConfig = {
         if (user.email) await OAuthVerifyEmailAction(user.email);
       }
     },
-    // async createUser({ user }) {
-    //   if (
-    //     user.email &&
-    //     process.env.ADMIN_EMAIL_ADDRESS?.toLowerCase() ===
-    //       user.email.toLowerCase()
-    //   ) {
-    //     await changeUserRoleAction(user.email, USER_ROLES.ADMIN);
-    //   }
-    // },
   },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
@@ -97,5 +82,5 @@ export const authConfig = {
       return false;
     },
   },
-  providers: [], // Add providers with an empty array for now
+  providers: [],
 } satisfies NextAuthConfig;

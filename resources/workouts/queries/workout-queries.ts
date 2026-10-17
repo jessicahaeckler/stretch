@@ -66,6 +66,7 @@ export async function fetchWorkoutById(id: string) {
         days: workouts.schedule_days,
         duration: workouts.duration,
         description: workouts.description,
+        schedule_days: workouts.schedule_days,
         tags: workouts.tags,
         image: workouts.image,
         status: workouts.status,

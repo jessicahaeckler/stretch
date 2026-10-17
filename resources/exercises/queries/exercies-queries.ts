@@ -2,7 +2,7 @@ import "server-only";
 
 import { db } from "@/drizzle";
 import { exercises, workoutExerciseLinks } from "@/drizzle/schema";
-import { count, desc, eq } from "drizzle-orm";
+import { count, desc, eq, sql } from "drizzle-orm";
 import { auth } from "@/lib/auth/auth";
 
 const ITEMS_PER_PAGE = 6;
@@ -56,13 +56,16 @@ export async function fetchExerciseLinksById(id: string) {
     const exerciseLinks = await db
       .select({
         id: workoutExerciseLinks.id,
-        time: workoutExerciseLinks.time,
-        reps: workoutExerciseLinks.reps,
-        rest: workoutExerciseLinks.rest,
-        order: workoutExerciseLinks.order,
+        name: sql<string>`coalesce(${exercises.name}, '')`,
+        description: sql<string>`coalesce(${exercises.description}, '')`,
+        time: sql<string>`coalesce(${workoutExerciseLinks.time}, '0')`,
+        reps: sql<number>`coalesce(${workoutExerciseLinks.reps}, 0)`,
+        rest: sql<string>`coalesce(${workoutExerciseLinks.rest}, '0')`,
+        order: sql<number>`coalesce(${workoutExerciseLinks.order}, 0)`,
         exerciseId: workoutExerciseLinks.exerciseId,
       })
       .from(workoutExerciseLinks)
+      .leftJoin(exercises, eq(exercises.id, workoutExerciseLinks.exerciseId))
       .where(eq(workoutExerciseLinks.workoutId, id));
 
     return exerciseLinks;

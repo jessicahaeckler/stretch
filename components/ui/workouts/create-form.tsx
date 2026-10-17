@@ -32,7 +32,7 @@ export default function createWorkoutForm() {
       schedule_days: [],
     },
   });
-  const { handleSubmit, control, formState, setError } = form;
+  const { handleSubmit, formState, setError } = form;
   const submit = async (values: CreateWorkoutInput) => {
     console.log("pressed");
     const res = await createWorkout(values);
@@ -62,8 +62,6 @@ export default function createWorkoutForm() {
     }
   };
 
-  // const initialState: State = { message: null, errors: {} };
-  // const [state, formAction] = useActionState(createWorkout, initialState);
   return (
     <Card className="bg-gray-50 pt-8">
       <form onSubmit={handleSubmit(submit)} className="space-y-6">
